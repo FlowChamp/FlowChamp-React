@@ -1,0 +1,34 @@
+.FlowChamp {
+   position: absolute;
+   display: flex;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+}
+
+.no-scroll {
+   overflow: hidden !important;
+}
+
+.support {
+   background: #fDDAB6 !important;
+}
+
+.general-ed {
+   background: #AAFCA3 !important;
+}
+
+.major {
+   background: #FFFF99 !important;
+}
+
+.concentration {
+   background: #EA80FC !important;
+}
+
+@keyframes fadein {
+   0% {
+      opacity: 0;
+   }
+}

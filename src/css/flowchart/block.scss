@@ -1,0 +1,42 @@
+.block {
+   height: 9em;
+   width: 10em;
+   margin: 10px;
+   display: flex;
+   text-align: left;
+   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
+   animation: block-appear 0.35s ease-in-out;
+}
+
+.block-contents {
+   display: flex;
+   flex-direction: column;
+   flex: 1;
+   background: lightgray;
+   padding: 15px;
+}
+
+.block-title {
+   font-size: 1.15em;
+   margin: 0;
+}
+
+.block-subtitle {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   flex: 1;
+   font-size: 0.8em;
+   font-weight: normal;
+}
+
+.block-units {
+   margin: 0;
+}
+
+@keyframes block-appear {
+   0% {
+      opacity: 0;
+      transform: translateX(10%);
+   }
+}

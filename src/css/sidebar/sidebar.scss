@@ -1,0 +1,70 @@
+.sidebar {
+   z-index: 100;
+   position: fixed;
+   display: flex;
+   flex-direction: column;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   width: 20em;
+   background: white;
+   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
+   animation: sidebarOpen 0.25s;
+}
+
+.background-cover {
+   z-index: 99;
+   position: fixed;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   background: rgba(0,0,0,0.3);
+   animation: fadeIn 0.25s;
+}
+
+.sidebar-nav-container {
+   display: flex;
+   align-items: center;
+   height: 4em;
+
+   h3 {
+      margin: 0.5em;
+   }
+}
+
+/* VIEWS */
+
+.sidebar-view {
+   display: flex;
+   flex-direction: column;
+
+   &.popped {
+      animation: slideLastView 0.25s;
+   }
+}
+
+.sidebar-view-container {
+   flex: 1;
+   overflow: auto;
+}
+
+
+@keyframes fadeIn {
+   0% {
+      opacity: 0;
+   }
+}
+
+@keyframes sidebarOpen {
+   0% {
+      opacity: 0;
+      transform: translateX(-20%);
+   }
+}
+
+@keyframes slideLastView {
+   0% {
+      transform: translateX(-10%);
+   }
+}
