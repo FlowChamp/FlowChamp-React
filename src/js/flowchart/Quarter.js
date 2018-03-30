@@ -16,7 +16,6 @@ export default class Quarter extends Component {
 
    getBlockComponents = () => {
       const data = this.state.data;
-      const courseData = data.course_data;
       let blockComponents = data.map(meta => {
          return (
             <Block
@@ -36,6 +35,7 @@ export default class Quarter extends Component {
 
       data.map(meta => {
          unitCount += courseData && !courseData.length ? courseData.units : 4;
+         return null;
       });
       this.setState(state => {
          state.unitCount = unitCount;

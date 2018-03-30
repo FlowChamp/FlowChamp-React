@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import MainView from './views/MainView';
 import ChartSelectView from './views/ChartSelectView';
+import LoginView from './views/LoginView';
+import { ArrowLeft, Menu } from 'react-feather';
 
 const views = {
    main: <MainView />,
-   chartSelect : <ChartSelectView />
+   chartSelect : <ChartSelectView header="New Flowchart"/>,
+   login : <LoginView header="Cal Poly Login"/>,
 }
 
 export default class Sidebar extends Component {
@@ -13,18 +16,27 @@ export default class Sidebar extends Component {
       this.state = {
          viewStack: [{
             view: 'main', props: {}
-          }, {
-            view: 'chartSelect',
-            props: {onEvent: this.handleEvent}
-         }],
+          }],
       };
 	}
 
    handleEvent = (options) => {
-      if (options.closeMenu) {
-         //this.emptySidebarViews();
+      if (options.type === 'change-view') {
+         this.changeView(options);
+      } else {
+         this.props.onEvent(options);
       }
-      this.props.onEvent(options);
+   }
+
+   changeView = (options) => {
+      this.setState(state => {
+         state.viewStack[state.viewStack.length-1].props.isPrevView = true;
+         state.viewStack.push({
+            view: options.value,
+            props: {onEvent: this.handleEvent}
+         });
+         return state;
+      });
    }
 
    popViewStack = () => {
@@ -57,13 +69,16 @@ export default class Sidebar extends Component {
 
    BackButton = () => {
       return this.state.viewStack.length > 1 ?
-         <h3 onClick={this.popViewStack}>Back</h3> : '';
+         <ArrowLeft className="back-icon"
+            onClick={this.popViewStack} /> : '';
    }
 
    getSidebarView = () => {
       let stack = this.state.viewStack;
       var stackItem = stack[stack.length-1];
       let view = views[stackItem.view];
+      stackItem.props.user = this.props.user;
+      stackItem.props.onEvent = this.handleEvent;
 
       // If a view has saved data, add that memoized data before returning
       // element.
@@ -84,7 +99,7 @@ export default class Sidebar extends Component {
              onClick = {this.closeSidebar}></div>
             <div className="sidebar">
                <div className="sidebar-nav-container">
-                  <h3 onClick={this.closeSidebar}>Close</h3>
+                  <Menu className="menu-icon" onClick={this.closeSidebar}/>
                   {this.BackButton()}
                </div>
                <div className="sidebar-view-container">

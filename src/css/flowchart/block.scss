@@ -6,6 +6,12 @@
    text-align: left;
    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
    animation: block-appear 0.35s ease-in-out;
+   transition: all 0.15s ease-in-out;
+
+   &:hover {
+   	transform: translateY(-5px);
+    	box-shadow: 0 4px 9px rgba(0, 0, 0, 0.2);
+   }
 }
 
 .block-contents {

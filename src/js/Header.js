@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
+import { Menu } from 'react-feather';
 
 export default class Header extends Component {
-	constructor(props) {
-		super(props);
-      console.log(props);
-	}
-
    handleEvent = (options) => {
-      console.log(options);
       this.props.onEvent(options);
    }
 
@@ -22,10 +17,10 @@ export default class Header extends Component {
       return (
          <div className="header">
             <div className="header-container left">
-               <h3 onClick={this.toggleSidebar}>MENU</h3>
+               <Menu className="menu-icon" onClick={this.toggleSidebar}/>
             </div>
             <div className="header-container center">
-               <h3>{this.props.name}</h3>
+               <h3 className="header-title">{this.props.name}</h3>
             </div>
             <div className="header-container right"></div>
          </div>

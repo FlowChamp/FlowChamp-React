@@ -1,0 +1,32 @@
+.sidebar-login-view {
+
+	.login-image-container {
+      height: 5em;
+      margin-bottom: 1em;
+      display: flex;
+
+      img {
+         max-height: 80%;
+         margin: auto;
+      }
+	}
+
+   form {
+      padding: 0 2em;
+   }
+
+   .submit-button {
+      appearance: none;
+		font-size: 1.3em;
+    	height: 2em;
+    	width: 6em;
+    	margin: 1em 0 0.5em 0;
+    	border: none;
+    	border-radius: 2px;
+    	background: #16AC61;
+    	color: white;
+    	box-shadow: 0 2px 1px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    	outline: none;
+    	cursor: pointer;
+   }
+}

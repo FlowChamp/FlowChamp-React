@@ -2,10 +2,12 @@
   "name": "orio-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/~tvillare/FlowChampReact",
   "dependencies": {
     "react": "^16.2.0",
     "react-beautiful-dnd": "^6.0.1",
     "react-dom": "^16.2.0",
+    "react-feather": "^1.0.8",
     "react-scripts": "1.1.1",
     "react-transition-group": "^1.2.1"
   },

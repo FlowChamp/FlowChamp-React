@@ -3,8 +3,10 @@
 @import 'sidebar/sidebar';
 @import 'sidebar/views/main-view';
 @import 'sidebar/views/chart-select-view';
+@import 'sidebar/views/login-view';
 
 @import 'header';
+@import 'welcome';
 
 @import 'course-modal';
 
@@ -14,3 +16,4 @@
 @import 'flowchart/block';
 
 @import 'components/nav-button';
+@import 'components/_input-fields';

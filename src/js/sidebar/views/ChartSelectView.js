@@ -17,6 +17,7 @@ export default class ChartSelectView extends Component {
 
    getStockChartButtons() {
       const departments = this.state.data;
+      let index = 0;
       let buttons = [];
 
       for (let department in departments) {
@@ -29,6 +30,7 @@ export default class ChartSelectView extends Component {
             <NavButton
                key={text}
                name={name}
+               index={index}
                dept={dept}
                action={{
                   type: 'change-chart',
@@ -38,6 +40,7 @@ export default class ChartSelectView extends Component {
                onEvent={this.handleEvent}
                text={text} />
          );
+         index++;
       }
       return buttons;
    }
@@ -60,7 +63,7 @@ export default class ChartSelectView extends Component {
    render() {
       return (
          <div className="sidebar-view sidebar-chart-select-view">
-            <h1>Charts</h1>
+            <h2 className="sidebar-header">{this.props.header}</h2>
             {this.state.data ? this.getStockChartButtons() : <h3>Loading...</h3>}
          </div>
       );

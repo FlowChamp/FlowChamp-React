@@ -28,7 +28,13 @@ export default class CourseModal extends Component {
       const courseType = blockMetadata.course_type.toLowerCase().split(' ').join('-');
       return (
          <div className={`modal-contents ${courseType}`}>
-
+           <ModalHeader
+               type={courseType}
+               title="Generic Course"
+               subtitle="A block that lets you choose any course"
+               units={4}
+               onEvent={this.handleEvent}
+            />
          </div>
       );
    }
@@ -53,7 +59,13 @@ export default class CourseModal extends Component {
       } else {
          return (
             <div className={`modal-contents ${courseType}`}>
-
+              <ModalHeader
+                  type={courseType}
+                  title="Multi Course"
+                  subtitle="A block that contains multiple courses"
+                  units={4}
+                  onEvent={this.handleEvent}
+               />
             </div>
          );
       }

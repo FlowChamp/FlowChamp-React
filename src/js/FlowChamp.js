@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 import Flowchart from './flowchart/Flowchart';
+import UserManager from './UserManager';
 import Sidebar from './sidebar/Sidebar';
 import Header from './Header';
 import CourseModal from './CourseModal';
+import Welcome from './flowchart/Welcome';
 
 export default class FlowChamp extends Component {
    constructor() {
       super();
       this.state = {
+         user: {
+            isLoggedIn: false,
+            username: null,
+            password: null,
+            config: {},
+         },
          sidebar: {
             isOpen: false,
          },
@@ -16,7 +24,8 @@ export default class FlowChamp extends Component {
             data: null,
          },
          currentChart: {
-            name: localStorage.currentChart || "No Chart Selected",
+            _name: localStorage.currentChart || "No Chart Selected",
+            name: localStorage.currentChart ? localStorage.currentChart.split('_').join(' ') : "Welcome",
             data: null,
          }
       }
@@ -28,7 +37,9 @@ export default class FlowChamp extends Component {
             this.toggleSidebar(options);
             break;
          case 'change-chart':
-            this.setCurrentChart(options);
+            if (options.value !== this.state.currentChart._name) {
+               this.setCurrentChart(options);
+            }
             if (options.closeMenu) {
                this.toggleSidebar({value: false});
             }
@@ -38,6 +49,12 @@ export default class FlowChamp extends Component {
             break;
          case 'close-course-modal':
             this.closeModal();
+            break;
+         case 'login':
+            this.setUserCredentials(options);
+            break;
+         case 'user-update':
+            this.updateUserConfig(options.value);
             break;
          default:
             console.log("Empty event: ", options);
@@ -53,36 +70,6 @@ export default class FlowChamp extends Component {
             state.sidebar.isOpen = options.value;
          }
          return state;
-      });
-   }
-
-   setCurrentChart = (options) => {
-	   fetch(`https://flowchamp.org/api/cpslo/stock_charts/15-17/${options.value}`)
-		   .then(response => {
-			   response.json().then((data) => {
-               // Required to refresh the blocks
-               if (data.message === 'Internal Server Error') {
-                  console.error("Couldn't load that chart.");
-                  return;
-               }
-					this.setState(state => {
-						state.currentChart = {
-                     data: null,
-                     _name: null,
-                     name: null,
-                  };
-                  return state;
-               });
-					this.setState(state => {
-						state.currentChart = {
-                     _name: options.value,
-                     name: options.value.split('_').join(' '),
-                     data: data
-                  }
-                  return state;
-               });
-               localStorage.currentChart = options.value;
-			   })
       });
    }
 
@@ -103,17 +90,70 @@ export default class FlowChamp extends Component {
       });
    }
 
+   setCurrentChart = (options) => {
+	   fetch(`https://flowchamp.org/api/cpslo/users/${options.username}/charts/${options.chart}`)
+		   .then(response => {
+			   response.json().then((data) => {
+               // Required to refresh the blocks
+               if (data.message === 'Internal Server Error') {
+                  console.error("Couldn't load that chart.");
+                  return;
+               }
+					this.setState(state => {
+						state.currentChart = {
+                     data: null,
+                     _name: null,
+                     name: null,
+                  };
+                  return state;
+               });
+					this.setState(state => {
+						state.currentChart = {
+                     _name: options.value,
+                     name: options.value,
+                     data: data
+                  }
+                  return state;
+               });
+               localStorage.currentChart = options.value;
+			   })
+      });
+   }
+
+   setUserCredentials = (options) => {
+      const username = options.value.username.toLowerCase();
+      const password = options.value.password;
+
+      this.setState(state => {
+         state.user.username = username;
+         state.user.password = password;
+         return state;
+      });
+      console.log(this.state.user);
+   }
+
+   updateUserConfig = (user) => {
+      const config = user.config;
+      this.setState(state => {
+         state.config = config;
+         return state;
+      });
+      this.setCurrentChart({
+         username: this.state.user.username,
+         chart: config.active_chart,
+      });
+   }
+
    componentWillMount() {
-      if (this.state.name !== "No Chart Selected") {
-         this.setCurrentChart({
-            value: localStorage.currentChart,
-         });
-      }
+
    }
 
    render() {
       return (
          <div className={`app-contents ${this.state.modal.isOpen ? 'no-scroll' : ''}`}>
+            <UserManager
+             user={this.state.user}
+             onEvent={this.handleEvent} />
             <Header
                currentChart={this.state.currentChart}
                name={this.state.currentChart.name}
@@ -121,6 +161,7 @@ export default class FlowChamp extends Component {
             />
             <Sidebar
                isOpen = {this.state.sidebar.isOpen}
+               user={this.state.user}
                currentChart={this.state.currentChart}
                onEvent = {this.handleEvent}
              />
@@ -130,13 +171,12 @@ export default class FlowChamp extends Component {
                   onEvent={this.handleEvent}
                /> : ''
             }
-            {this.state.currentChart.data ?
+            {this.state.user.isLoggedIn ?
                <Flowchart
                   scroll={!this.state.modal.isOpen}
                   currentChart={this.state.currentChart}
                   onEvent={this.handleEvent}
-               /> :
-               <h1>No Chart Selected</h1>
+               /> : <Welcome />
             }
          </div>
       );

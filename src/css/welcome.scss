@@ -1,0 +1,34 @@
+.welcome-container {
+   position: fixed;
+   top: 0;
+   bottom: 20%;
+   left: 0;
+   right: 0;
+	display: flex;
+   flex-direction: column;
+   align-items: center;
+   max-height: 10em;
+   max-width: 20em;
+   margin: auto;
+
+   img {
+      max-height: 100%;
+      animation: welcome-fade-up 2s;
+   }
+
+   .welcome-title {
+    	font-family: avenir, sans-serif;
+    	font-weight: 400;
+    	color: #15522c;
+    	font-size: 2.5em;
+    	margin: 0.5em;
+      animation: welcome-fade-up 2s;
+   }
+
+   @keyframes welcome-fade-up {
+      0% {
+         opacity: 0;
+         transform: translateY(50%);
+      }
+   }
+}
