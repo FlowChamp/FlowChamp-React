@@ -18,14 +18,15 @@ export default class FlowChamp extends Component {
          },
          sidebar: {
             isOpen: false,
+            isClosing: false,
          },
          modal: {
             isOpen: false,
             data: null,
          },
          currentChart: {
-            _name: localStorage.currentChart || "No Chart Selected",
-            name: localStorage.currentChart ? localStorage.currentChart.split('_').join(' ') : "Welcome",
+            _name: null,
+            name: "Welcome",
             data: null,
          }
       }
@@ -63,14 +64,28 @@ export default class FlowChamp extends Component {
    }
 
    toggleSidebar = (options) => {
+      if (this.state.sidebar.isOpen) {
+         this.closeSidebar();
+      } else {
+         this.setState(state => {
+            state.sidebar.isOpen = true;
+            return state;
+         });
+      }
+   }
+
+   closeSidebar = () => {
       this.setState(state => {
-         if (options.action === 'toggle') {
-            state.sidebar.isOpen = !state.sidebar.isOpen;
-         } else {
-            state.sidebar.isOpen = options.value;
-         }
+         state.sidebar.isClosing = true;
          return state;
       });
+      setTimeout(() => {
+         this.setState(state => {
+            state.sidebar.isOpen = false;
+            state.sidebar.isClosing = false;
+            return state;
+         });
+      }, 340);
    }
 
    setModalData = (options) => {
@@ -94,11 +109,11 @@ export default class FlowChamp extends Component {
 	   fetch(`https://flowchamp.org/api/cpslo/users/${options.username}/charts/${options.chart}`)
 		   .then(response => {
 			   response.json().then((data) => {
-               // Required to refresh the blocks
                if (data.message === 'Internal Server Error') {
                   console.error("Couldn't load that chart.");
                   return;
                }
+               // Required to refresh the blocks
 					this.setState(state => {
 						state.currentChart = {
                      data: null,
@@ -115,7 +130,6 @@ export default class FlowChamp extends Component {
                   }
                   return state;
                });
-               localStorage.currentChart = options.value;
 			   })
       });
    }
@@ -129,7 +143,6 @@ export default class FlowChamp extends Component {
          state.user.password = password;
          return state;
       });
-      console.log(this.state.user);
    }
 
    updateUserConfig = (user) => {
@@ -144,10 +157,6 @@ export default class FlowChamp extends Component {
       });
    }
 
-   componentWillMount() {
-
-   }
-
    render() {
       return (
          <div className={`app-contents ${this.state.modal.isOpen ? 'no-scroll' : ''}`}>
@@ -156,11 +165,12 @@ export default class FlowChamp extends Component {
              onEvent={this.handleEvent} />
             <Header
                currentChart={this.state.currentChart}
-               name={this.state.currentChart.name}
+               name={this.state.user.isLoggedIn ? this.state.currentChart.name : "Welcome"}
                onEvent = {this.handleEvent}
             />
             <Sidebar
                isOpen = {this.state.sidebar.isOpen}
+               isClosing={this.state.sidebar.isClosing}
                user={this.state.user}
                currentChart={this.state.currentChart}
                onEvent = {this.handleEvent}
@@ -176,7 +186,9 @@ export default class FlowChamp extends Component {
                   scroll={!this.state.modal.isOpen}
                   currentChart={this.state.currentChart}
                   onEvent={this.handleEvent}
-               /> : <Welcome />
+               /> :
+               <Welcome
+                  fadeOut={this.state.sidebar.isOpen && !this.state.sidebar.isClosing}/>
             }
          </div>
       );

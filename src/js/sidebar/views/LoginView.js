@@ -26,7 +26,10 @@ export default class LoginView extends Component {
 
    render() {
       return (
-         <div className={`sidebar-view sidebar-login-view ${this.props.isPrevView ? 'slide-in-left' : ''}`}>
+         <div className={`sidebar-view sidebar-login-view
+            ${this.props.isPrevView ? 'slide-in-left' : ''}
+            ${this.props.isEnteringNewView ? 'entering-new-view' : ''}
+            ${this.props.isEnteringOldView ? 'entering-old-view' : ''}`}>
             <h2 className="sidebar-header">{this.props.header}</h2>
             <div className="login-image-container">
                <img alt="Cal Poly Logo" src="images/logos/cpslo.png"/>

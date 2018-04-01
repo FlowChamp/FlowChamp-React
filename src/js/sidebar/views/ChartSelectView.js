@@ -62,7 +62,10 @@ export default class ChartSelectView extends Component {
 
    render() {
       return (
-         <div className="sidebar-view sidebar-chart-select-view">
+         <div className={`sidebar-view sidebar-chart-select-view
+            ${this.props.isPrevView ? 'slide-in-left' : ''}
+            ${this.props.isEnteringNewView ? 'entering-new-view' : ''}
+            ${this.props.isEnteringOldView ? 'entering-old-view' : ''}`}>
             <h2 className="sidebar-header">{this.props.header}</h2>
             {this.state.data ? this.getStockChartButtons() : <h3>Loading...</h3>}
          </div>

@@ -11,6 +11,10 @@ $duration: 0.35s;
    background: white;
    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
    animation: sidebarOpen $duration;
+
+   &.closing {
+      animation: sidebarClose $duration;
+   }
 }
 
 .background-cover {
@@ -22,23 +26,28 @@ $duration: 0.35s;
    right: 0;
    background: rgba(0,0,0,0.3);
    animation: fadeIn $duration;
+
+   &.cover-closing {
+      animation: fadeOut $duration;
+   }
 }
 
 .sidebar-nav-container {
    display: flex;
    align-items: center;
    height: 4em;
-   padding-left: 1em;
 
    h3 {
       margin: 0.5em;
    }
 
-   svg {
-      cursor: pointer;
-      width: 2.5em;
+   .sidebar-nav-icon {
+      width: 2em;
+      stroke-width: 1.5;
       height: auto;
+      cursor: pointer;
       margin-right: 0.5em;
+      color: rgb(100,100,100);
    }
 
    .back-icon {
@@ -47,6 +56,34 @@ $duration: 0.35s;
 
    .menu-icon {
       animation: slideNewView 0.35s;
+   }
+
+   .left-nav-container, .right-nav-container {
+      display: flex;
+      flex: 1;
+      height: 100%;
+      transition: all 0.15s ease-in-out;
+   }
+
+   .left-nav-container {
+      justify-content: flex-start;
+      padding-left: 1em;
+   }
+
+   .right-nav-container {
+      justify-content: flex-end;
+      padding-right: 1em;
+
+      .sidebar-nav-icon {
+         margin-left: 0.5em;
+         margin-right: 0;
+      }
+   }
+
+   .invisible {
+      opacity: 0;
+      user-select: none;
+      pointer-events: none;
    }
 }
 
@@ -62,10 +99,18 @@ $duration: 0.35s;
 .sidebar-view {
    display: flex;
    flex-direction: column;
-   animation: slideNewView $duration;
+   animation: slideNewView 0.25s;
+
+   &.entering-new-view {
+      animation: viewFadeOutLeft 0.25s !important;
+   }
+
+   &.entering-old-view {
+      animation: viewFadeOutRight 0.25s;
+   }
 
    &.slide-in-left {
-      animation: slideOldView $duration;
+      animation: slideOldView 0.25s;
    }
 }
 
@@ -76,10 +121,38 @@ $duration: 0.35s;
    }
 }
 
+@keyframes fadeOut {
+   100% {
+      opacity: 0;
+   }
+}
+
 @keyframes sidebarOpen {
    0% {
       opacity: 0;
       transform: translateX(-20%);
+   }
+}
+
+@keyframes sidebarClose {
+   100% {
+      opacity: 0;
+      transform: translateX(-20%);
+   }
+}
+
+@keyframes viewFadeOutRight {
+   100% {
+      transform: translateX(20%);
+      opacity: 0;
+   }
+}
+
+
+@keyframes viewFadeOutLeft {
+   100% {
+      transform: translateX(-20%);
+      opacity: 0;
    }
 }
 

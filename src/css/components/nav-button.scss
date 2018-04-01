@@ -9,6 +9,19 @@
    }
 }
 
+.button {
+	background: dodgerblue;
+  	color: white;
+   height: 2.5em;
+   line-height: 2.5em;
+   text-align: center;
+   font-size: 0.875em;
+   font-weight: regular;
+   border-radius: 4px;
+   cursor: pointer;
+   transition: all 0.15s ease-in-out;
+}
+
 @keyframes buttonSlideIn {
    0% {
       opacity: 0;

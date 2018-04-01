@@ -36,6 +36,8 @@
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
   animation: sidebarOpen 0.35s; }
+  .sidebar.closing {
+    animation: sidebarClose 0.35s; }
 
 .background-cover {
   z-index: 99;
@@ -46,23 +48,44 @@
   right: 0;
   background: rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.35s; }
+  .background-cover.cover-closing {
+    animation: fadeOut 0.35s; }
 
 .sidebar-nav-container {
   display: flex;
   align-items: center;
-  height: 4em;
-  padding-left: 1em; }
+  height: 4em; }
   .sidebar-nav-container h3 {
     margin: 0.5em; }
-  .sidebar-nav-container svg {
-    cursor: pointer;
-    width: 2.5em;
+  .sidebar-nav-container .sidebar-nav-icon {
+    width: 2em;
+    stroke-width: 1.5;
     height: auto;
-    margin-right: 0.5em; }
+    cursor: pointer;
+    margin-right: 0.5em;
+    color: #646464; }
   .sidebar-nav-container .back-icon {
     animation: slideInLeft 0.25s; }
   .sidebar-nav-container .menu-icon {
     animation: slideNewView 0.35s; }
+  .sidebar-nav-container .left-nav-container, .sidebar-nav-container .right-nav-container {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    transition: all 0.15s ease-in-out; }
+  .sidebar-nav-container .left-nav-container {
+    justify-content: flex-start;
+    padding-left: 1em; }
+  .sidebar-nav-container .right-nav-container {
+    justify-content: flex-end;
+    padding-right: 1em; }
+    .sidebar-nav-container .right-nav-container .sidebar-nav-icon {
+      margin-left: 0.5em;
+      margin-right: 0; }
+  .sidebar-nav-container .invisible {
+    opacity: 0;
+    user-select: none;
+    pointer-events: none; }
 
 .sidebar-view-container {
   flex: 1;
@@ -74,17 +97,36 @@
 .sidebar-view {
   display: flex;
   flex-direction: column;
-  animation: slideNewView 0.35s; }
+  animation: slideNewView 0.25s; }
+  .sidebar-view.entering-new-view {
+    animation: viewFadeOutLeft 0.25s !important; }
+  .sidebar-view.entering-old-view {
+    animation: viewFadeOutRight 0.25s; }
   .sidebar-view.slide-in-left {
-    animation: slideOldView 0.35s; }
+    animation: slideOldView 0.25s; }
 
 @keyframes fadeIn {
   0% {
+    opacity: 0; } }
+@keyframes fadeOut {
+  100% {
     opacity: 0; } }
 @keyframes sidebarOpen {
   0% {
     opacity: 0;
     transform: translateX(-20%); } }
+@keyframes sidebarClose {
+  100% {
+    opacity: 0;
+    transform: translateX(-20%); } }
+@keyframes viewFadeOutRight {
+  100% {
+    transform: translateX(20%);
+    opacity: 0; } }
+@keyframes viewFadeOutLeft {
+  100% {
+    transform: translateX(-20%);
+    opacity: 0; } }
 @keyframes slideNewView {
   0% {
     opacity: 0;
@@ -197,16 +239,22 @@
   max-height: 10em;
   max-width: 20em;
   margin: auto; }
+  .welcome-container.faded img {
+    filter: grayscale(1) opacity(0.6); }
+  .welcome-container.faded .welcome-title {
+    opacity: 0; }
   .welcome-container img {
     max-height: 100%;
-    animation: welcome-fade-up 2s; }
+    animation: welcome-fade-up 2s;
+    transition: all 0.35s ease-in-out; }
   .welcome-container .welcome-title {
     font-family: avenir, sans-serif;
     font-weight: 400;
     color: #15522c;
     font-size: 2.5em;
     margin: 0.5em;
-    animation: welcome-fade-up 2s; }
+    animation: welcome-fade-up 2s;
+    transition: all 0.35s ease-in-out; }
 @keyframes welcome-fade-up {
   0% {
     opacity: 0;
@@ -355,6 +403,18 @@
   cursor: pointer; }
   .nav-button h3 {
     font-weight: normal; }
+
+.button {
+  background: dodgerblue;
+  color: white;
+  height: 2.5em;
+  line-height: 2.5em;
+  text-align: center;
+  font-size: 0.875em;
+  font-weight: regular;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out; }
 
 @keyframes buttonSlideIn {
   0% {

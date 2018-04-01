@@ -11,9 +11,20 @@
    max-width: 20em;
    margin: auto;
 
+   &.faded {
+      img {
+         filter: grayscale(1) opacity(0.6);
+      }
+
+      .welcome-title {
+         opacity: 0;
+      }
+   }
+
    img {
       max-height: 100%;
       animation: welcome-fade-up 2s;
+      transition: all $duration ease-in-out;
    }
 
    .welcome-title {
@@ -23,6 +34,7 @@
     	font-size: 2.5em;
     	margin: 0.5em;
       animation: welcome-fade-up 2s;
+      transition: all $duration ease-in-out;
    }
 
    @keyframes welcome-fade-up {
