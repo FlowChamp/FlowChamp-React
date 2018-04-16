@@ -326,14 +326,15 @@
   flex-direction: column;
   flex: 1; }
   .year .year-title {
-    text-align: center;
-    margin: 1em auto 0.5em auto; }
+    font-size: 1.8em;
+    margin: 0.4em 0 0.3em 1.4em;
+    color: #4F4F4F; }
 
 .quarter-container {
   position: relative;
   display: flex;
   flex: 1;
-  padding: 0 2em;
+  padding: 0.5em 2em 0 2em;
   overflow: auto;
   border-right: 1px solid rgba(0, 0, 0, 0.12); }
 
@@ -344,18 +345,21 @@
   flex: 1; }
 
 .quarter-head {
-  text-align: center; }
+  display: flex;
+  height: 1em;
+  align-items: center;
+  justify-content: space-between; }
 
 .quarter-season {
   font-size: 1em;
-  font-weight: normal;
-  margin: 0.5em auto; }
+  margin: 0 0.6em;
+  color: #4F4F4F; }
 
 .quarter-units {
   font-size: 0.9em;
   font-weight: normal;
   color: rgba(0, 0, 0, 0.5);
-  margin: 0.5em auto; }
+  margin: 0 0.75em; }
 
 .block {
   height: 9em;
