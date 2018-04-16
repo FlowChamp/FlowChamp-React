@@ -35,6 +35,7 @@ export default class ChartSelectView extends Component {
                action={{
                   type: 'change-chart',
                   value: name,
+                  demo: this.props.isDemo,
                   closeMenu: true,
                }}
                onEvent={this.handleEvent}

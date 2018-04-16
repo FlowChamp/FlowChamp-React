@@ -6,13 +6,12 @@ export default class MainView extends Component {
    }
 
    render() {
-      console.log(this.props);
       return (
          <div className={`sidebar-view sidebar-main-view
             ${this.props.isPrevView ? 'slide-in-left' : ''}
             ${this.props.isEnteringNewView ? 'entering-new-view' : ''}
             ${this.props.isEnteringOldView ? 'entering-old-view' : ''}`}>
-            <img alt="logo" className="sidebar-logo" src="images/icons/logo.png"/>
+            <img alt="logo" className="sidebar-logo" src="images/icons/logo.svg"/>
             <h3 className="sidebar-subheader">Flowcharts</h3>
             <ChartSelectWidget
                {...this.props}
@@ -28,7 +27,7 @@ class ChartSelectWidget extends Component {
    }
 
    newChart = () => {
-      if (!this.props.user.isLoggedIn) {
+      if (!this.props.user.isLoggedIn && this.props.user.requireAuth) {
          this.handleEvent({
             type: 'change-view',
             value: 'login',
@@ -37,6 +36,7 @@ class ChartSelectWidget extends Component {
          this.handleEvent({
             type: 'change-view',
             value: 'chartSelect',
+            demo: true,
          });
       }
    }

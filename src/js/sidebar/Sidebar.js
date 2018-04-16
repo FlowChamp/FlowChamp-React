@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import SidebarNav from './components/SidebarNav';
 import MainView from './views/MainView';
 import ChartSelectView from './views/ChartSelectView';
 import LoginView from './views/LoginView';
 import SettingsView from './views/SettingsView';
-import { ArrowLeft, Menu, Settings, User, UserMinus } from 'react-feather';
 
 const views = {
    main: <MainView />,
@@ -46,6 +46,7 @@ export default class Sidebar extends Component {
                view: options.value,
                props: {
                   isEnteringNewView: this.state.isEnteringNewView,
+                  isDemo: !this.props.user.requireAuth,
                   onEvent: this.handleEvent}
             });
             return state;
@@ -67,6 +68,13 @@ export default class Sidebar extends Component {
             return state;
          });
       }, 250);
+   }
+
+   closeSidebar = () => {
+      this.handleEvent({
+         type: 'sidebar',
+         action: 'toggle'
+      });
    }
 
    emptySidebarViews = () => {
@@ -108,72 +116,12 @@ export default class Sidebar extends Component {
             <div className={`background-cover ${this.props.isClosing ? 'cover-closing' : ''}`}
              onClick = {this.closeSidebar}></div>
             <div className={`sidebar ${this.props.isClosing ? 'closing' : ''}`}>
-               <NavContainer {...this.props}
+               <SidebarNav {...this.props}
                   viewStack={this.state.viewStack}
                   onEvent={this.handleEvent}/>
                <div className="sidebar-view-container">
                   {this.getSidebarView()}
                </div>
-            </div>
-         </div>
-      );
-   }
-}
-
-class NavContainer extends Component {
-   handleEvent = options => {
-      this.props.onEvent(options);
-   }
-
-   closeSidebar = () => {
-      this.handleEvent({
-         type: 'sidebar',
-         action: 'toggle'
-      });
-   }
-
-   openSettings = () => {
-      this.handleEvent({
-         type: 'change-view',
-         value: 'settings',
-      });
-   }
-
-   popViewStack = () => {
-      this.handleEvent({
-         type: 'pop-view'
-      });
-   }
-
-   loginView = () => {
-      this.handleEvent({
-         type: 'change-view',
-         value: 'login',
-      });
-   }
-
-   BackButton = () => {
-      return this.props.viewStack.length > 1 ?
-         <ArrowLeft className="sidebar-nav-icon back-icon"
-            onClick={this.popViewStack} /> : '';
-   }
-
-   LoginLogoutButton = () => {
-      return this.props.user.isLoggedIn ?
-         <UserMinus className="sidebar-nav-icon"/> :
-         <User className="sidebar-nav-icon" onClick={this.loginView} />;
-   }
-
-   render() {
-      return (
-         <div className="sidebar-nav-container">
-            <div className="left-nav-container">
-               <Menu className="menu-icon" onClick={this.closeSidebar}/>
-               {this.BackButton()}
-            </div>
-            <div className={`right-nav-container ${this.props.viewStack.length > 1 ? 'invisible' : ''}`}>
-               <Settings className="sidebar-nav-icon" onClick={this.openSettings}/>
-               {this.LoginLogoutButton()}
             </div>
          </div>
       );

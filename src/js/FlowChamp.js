@@ -7,28 +7,26 @@ import CourseModal from './CourseModal';
 import Welcome from './flowchart/Welcome';
 
 export default class FlowChamp extends Component {
-   constructor() {
-      super();
-      this.state = {
-         user: {
-            isLoggedIn: false,
-            username: null,
-            password: null,
-            config: {},
-         },
-         sidebar: {
-            isOpen: false,
-            isClosing: false,
-         },
-         modal: {
-            isOpen: false,
-            data: null,
-         },
-         currentChart: {
-            _name: null,
-            name: "Welcome",
-            data: null,
-         }
+   state = {
+      user: {
+         requireAuth: true,
+         isLoggedIn: false,
+         username: null,
+         password: null,
+         config: {},
+      },
+      sidebar: {
+         isOpen: false,
+         isClosing: false,
+      },
+      modal: {
+         isOpen: false,
+         data: null,
+      },
+      currentChart: {
+         _name: null,
+         name: "Welcome",
+         data: null,
       }
    }
 
@@ -44,6 +42,9 @@ export default class FlowChamp extends Component {
             if (options.closeMenu) {
                this.toggleSidebar({value: false});
             }
+            break;
+         case 'demo':
+            this.toggleDemo(options.value);
             break;
          case 'open-course-modal':
             this.setModalData(options);
@@ -89,7 +90,6 @@ export default class FlowChamp extends Component {
    }
 
    setModalData = (options) => {
-      console.log(options);
       this.setState(state => {
          state.modal.data = options.value;
          state.modal.isOpen = true;
@@ -105,8 +105,19 @@ export default class FlowChamp extends Component {
       });
    }
 
+   toggleDemo = (value) => {
+      this.setState(state => {
+         state.user.requireAuth = !value;
+         return state;
+      });
+   }
+
    setCurrentChart = (options) => {
-	   fetch(`https://flowchamp.org/api/cpslo/users/${options.username}/charts/${options.chart}`)
+      const url = options.demo
+         ? `https://flowchamp.org/api/cpslo/stock_charts/15-17/${options.value}`
+         : `https://flowchamp.org/api/cpslo/users/${options.username}/charts/${options.chart}`;
+
+	   fetch(url)
 		   .then(response => {
 			   response.json().then((data) => {
                if (data.message === 'Internal Server Error') {
@@ -114,13 +125,12 @@ export default class FlowChamp extends Component {
                   return;
                }
                // Required to refresh the blocks
-					this.setState(state => {
-						state.currentChart = {
+               this.setState({
+                  currentChart: {
                      data: null,
                      _name: null,
-                     name: null,
-                  };
-                  return state;
+                     name: null
+                  }
                });
 					this.setState(state => {
 						state.currentChart = {
@@ -157,39 +167,40 @@ export default class FlowChamp extends Component {
       });
    }
 
+   canShowFlowchart = () => {
+      return (this.state.user.isLoggedIn || !this.state.user.requireAuth) &&
+         this.state.currentChart.data;
+   }
+
    render() {
       return (
          <div className={`app-contents ${this.state.modal.isOpen ? 'no-scroll' : ''}`}>
             <UserManager
-             user={this.state.user}
-             onEvent={this.handleEvent} />
+               user={this.state.user}
+               onEvent={this.handleEvent} />
             <Header
                currentChart={this.state.currentChart}
                name={this.state.user.isLoggedIn ? this.state.currentChart.name : "Welcome"}
-               onEvent = {this.handleEvent}
-            />
+               onEvent = {this.handleEvent} />
             <Sidebar
                isOpen = {this.state.sidebar.isOpen}
                isClosing={this.state.sidebar.isClosing}
                user={this.state.user}
                currentChart={this.state.currentChart}
-               onEvent = {this.handleEvent}
-             />
-            {this.state.modal.data && this.state.modal.isOpen ?
-               <CourseModal
+               onEvent = {this.handleEvent} />
+            {this.state.modal.data && this.state.modal.isOpen
+               ? <CourseModal
                   data={this.state.modal.data}
-                  onEvent={this.handleEvent}
-               /> : ''
+                  onEvent={this.handleEvent} />
+               : ''
             }
-            {this.state.user.isLoggedIn ?
-               <Flowchart
+            {this.canShowFlowchart()
+               ? <Flowchart
                   scroll={!this.state.modal.isOpen}
                   currentChart={this.state.currentChart}
-                  onEvent={this.handleEvent}
-               /> :
-               <Welcome
-                  fadeOut={this.state.sidebar.isOpen && !this.state.sidebar.isClosing}/>
-            }
+                  onEvent={this.handleEvent} />
+               : <Welcome
+                  fadeOut={this.state.sidebar.isOpen && !this.state.sidebar.isClosing}/> }
          </div>
       );
    }

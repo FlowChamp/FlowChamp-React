@@ -397,12 +397,23 @@
     opacity: 0;
     transform: translateX(10%); } }
 .nav-button {
+  display: flex;
   padding-left: 1em;
   animation: buttonSlideIn 0.35s;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   cursor: pointer; }
   .nav-button h3 {
     font-weight: normal; }
+
+.left-container, .right-container {
+  display: flex;
+  align-items: center; }
+
+.left-container {
+  flex: 1; }
+
+.right-container {
+  padding-right: 1em; }
 
 .button {
   background: dodgerblue;
