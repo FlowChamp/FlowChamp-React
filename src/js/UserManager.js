@@ -8,45 +8,89 @@ export default class UserManager extends Component {
       };
 	}
 
-   handleEvent = (options) => {
-      this.props.onEvent(options);
-   }
+   static requestPin = options => {
+      return new Promise(function(resolve, reject) {
+         const url = "https://flowchamp.org/api/cpslo/getpin";
+         const data = JSON.stringify({email: options.email});
 
-   login = () => {
-      const user = this.state.user;
-      const url = "https://flowchamp.org/api/cpslo/authorize";
-
-      if (!user.isLoggedIn && user.username && user.password) {
-         console.log("logging in...");
          fetch (url, {
             headers: {
-               'Authorization': 'Basic '+btoa(`${user.username}:${user.password}`),
+               'Content-Type': 'application/json'
             },
             mode: 'cors',
             method: 'POST',
-         })
-         .then(response => {
+            body: data
+         }).then(response => {
             response.json().then((data) => {
-               console.log(data);
-               this.setState(state => {
-                  state.user.config = data;
-                  state.user.isLoggedIn = true;
-                  return state;
-               });
-               this.handleEvent({
-                  type: 'user-update',
-                  value: this.state.user,
-               });
+               resolve(data);
             });
-         })
-         .catch(e => {
-            console.log(e);
-         })
-      }
+         }).catch(e => {
+            reject(Error(e));
+         });
+      });
    }
 
-   componentDidUpdate() {
-      this.login();
+   static signup = options => {
+      return new Promise(function(resolve, reject) {
+         const url = "https://flowchamp.org/api/cpslo/signup";
+         const data = JSON.stringify({
+            pin: options.pin
+         });
+
+         fetch (url, {
+            headers: {
+               'Authorization': 'Basic '+btoa(`${options.email}:${options.password}`),
+               'Content-Type': 'application/json'
+            },
+            mode: 'cors',
+            method: 'POST',
+            body: data
+         }).then(response => {
+            response.json().then((data) => {
+               resolve(data);
+            });
+         }).catch(e => {
+            reject(Error(e));
+         });
+      });
+   }
+
+   static login = options => {
+      return new Promise(function(resolve, reject) {
+         const url = "https://flowchamp.org/api/cpslo/authorize";
+         const data = JSON.stringify({
+            email: options.email,
+            password: options.password
+         });
+
+         fetch (url, {
+            headers: {
+               'Authorization': 'Basic '+btoa(`${options.email}:${options.password}`),
+               'Content-Type': 'application/json'
+            },
+            mode: 'cors',
+            method: 'POST',
+            body: data
+         }).then(response => {
+            response.json().then((data) => {
+               resolve(data);
+            });
+         }).catch(e => {
+            reject(Error(e));
+         });
+      });
+   }
+
+   static updateConfig = options => {
+      console.log(options);
+   }
+
+   static getCurrentYear() {
+      console.log(this.state.user);
+   }
+
+   handleEvent = (options) => {
+      this.props.onEvent(options);
    }
 
    render() {

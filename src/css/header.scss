@@ -6,9 +6,9 @@
    display: flex;
    height: 4em;
    padding: 0 15px;
-   background: #16AC61;
-   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-   color: white;
+   background: #FAFAFA;
+   border-bottom: 1px solid #DDDDDD;
+   color: #3c3c3c;
 }
 
 .header-container {
@@ -31,6 +31,15 @@
 
    &.right {
       justify-content: flex-end;
+      color: $blue;
+
+      h3 {
+         cursor: pointer;
+
+         &:active {
+            filter: brightness(0.95);
+         }
+      }
    }
 }
 
@@ -41,5 +50,8 @@
 }
 
 .header-title {
-   font-weight: normal
+   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+   font-size: 24px;
+   font-weight: 300;
+   margin: 0;
 }

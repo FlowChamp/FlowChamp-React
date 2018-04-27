@@ -1,5 +1,8 @@
-$duration: 0.35s;
+$duration: 0.20s;
+$sidebarDuration: 0.3s;
+
 .sidebar {
+   font-family: helvetica;
    z-index: 100;
    position: fixed;
    display: flex;
@@ -10,10 +13,10 @@ $duration: 0.35s;
    width: 20em;
    background: white;
    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
-   animation: sidebarOpen $duration;
+   animation: sidebarOpen $sidebarDuration;
 
    &.closing {
-      animation: sidebarClose $duration;
+      animation: sidebarClose $sidebarDuration;
    }
 }
 
@@ -25,10 +28,10 @@ $duration: 0.35s;
    left: 0;
    right: 0;
    background: rgba(0,0,0,0.3);
-   animation: fadeIn $duration;
+   animation: fadeIn $sidebarDuration;
 
    &.cover-closing {
-      animation: fadeOut $duration;
+      animation: fadeOut $sidebarDuration;
    }
 }
 
@@ -36,6 +39,8 @@ $duration: 0.35s;
    display: flex;
    align-items: center;
    height: 4em;
+   background: #FAFAFA;
+   border-bottom: 1px solid #DDDDDD;
 
    h3 {
       margin: 0.5em;
@@ -47,11 +52,14 @@ $duration: 0.35s;
       height: auto;
       cursor: pointer;
       margin-right: 0.5em;
-      color: rgb(100,100,100);
+      color: #428bd2;
    }
 
    .back-icon {
-      animation: slideInLeft 0.25s;
+      stroke-width: 2;
+      margin-left: 0.5em;
+      color: #3C3C3C;
+      animation: slideInLeft 0.15s;
    }
 
    .menu-icon {
@@ -93,24 +101,26 @@ $duration: 0.35s;
 }
 
 .sidebar-header {
-   padding-left: 0.8em;
+   font-family: "Varela Round";
+   font-size: 30px;
+   padding-left: 16px;
 }
 
 .sidebar-view {
    display: flex;
    flex-direction: column;
-   animation: slideNewView 0.25s;
+   animation: slideNewView $duration;
 
    &.entering-new-view {
-      animation: viewFadeOutLeft 0.25s !important;
+      animation: viewFadeOutLeft $duration !important;
    }
 
    &.entering-old-view {
-      animation: viewFadeOutRight 0.25s;
+      animation: viewFadeOutRight $duration;
    }
 
    &.slide-in-left {
-      animation: slideOldView 0.25s;
+      animation: slideOldView $duration;
    }
 }
 

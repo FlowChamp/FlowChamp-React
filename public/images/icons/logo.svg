@@ -1,33 +1,34 @@
-<svg width="369" height="369" viewBox="0 0 369 369" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="195" height="195" viewBox="0 0 195 195" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="Canvas" fill="none">
 <g id="logo">
-<g id="Rectangle">
-<rect width="268" height="268" rx="50" fill="#FFBE7D"/>
+<g id="Rectangle 4.2" filter="url(#filter0_d)">
+<rect width="57" height="57" rx="8" transform="translate(12 0) scale(3)" fill="white"/>
+<rect x="1.5" y="1.5" width="54" height="54" rx="6.5" stroke-width="3" transform="translate(12 0) scale(3)" stroke="#2D9CDB"/>
 </g>
-<g id="Rectangle_2">
-<rect width="268" height="268" rx="50" transform="translate(101 39)" fill="#FFEB57"/>
+<g id="Group">
+<g id="Rectangle 5">
+<rect width="27" height="10.7381" rx="5.36905" transform="translate(57 24) scale(3)" fill="#4F4F4F"/>
 </g>
-<g id="Rectangle_3">
-<rect width="268" height="268" rx="50" transform="translate(38 101)" fill="#16AC61"/>
+<g id="Rectangle 5.2">
+<rect width="21.2143" height="10.7381" rx="5.36905" transform="translate(57 73.7857) scale(3)" fill="#4F4F4F"/>
 </g>
-<g id="Rectangle 2">
-<path d="M 0 50C 0 22.3858 22.3858 0 50 0L 153 0L 153 193C 153 220.614 130.614 243 103 243L 50 243C 22.3858 243 0 220.614 0 193L 0 50Z" transform="translate(101 39)" fill="#FCF1A8"/>
-</g>
-<g id="Rectangle 2.1">
-<path d="M 0 0L 153 0L 153 131C 153 158.614 130.614 181 103 181L 50 181C 22.3858 181 0 158.614 0 131L 0 0Z" transform="translate(101 101)" fill="#29D07C"/>
-</g>
-<g id="F">
-<g id="Rectangle 2_2">
-<rect width="99" height="33" rx="16.5" transform="translate(128 87)" fill="#044E1D"/>
-</g>
-<g id="Rectangle 2.1_2">
-<rect width="73" height="33" rx="16.5" transform="translate(128 151)" fill="#044E1D"/>
-</g>
-<g id="Rectangle 2.2">
-<rect width="147" height="33" rx="16.5" transform="matrix(0 -1 1 0 128 234)" fill="#044E1D"/>
+<g id="Rectangle 5.1">
+<rect width="41" height="10.6071" rx="5.30357" transform="matrix(0 -3 3 0 57 147)" fill="#4F4F4F"/>
 </g>
 </g>
 </g>
 </g>
+<defs>
+<filter id="filter0_d" x="0" y="0" width="195" height="195" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 255 0"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+</filter>
+
+</defs>
 </svg>
 

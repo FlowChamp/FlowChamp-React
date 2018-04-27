@@ -2,31 +2,61 @@
 
 	.login-image-container {
       height: 5em;
-      margin-bottom: 1em;
+      margin: 0.5em auto;
       display: flex;
 
       img {
-         max-height: 80%;
+         height: 2.9em;
          margin: auto;
       }
 	}
 
+   .signup-button {
+      margin: 0 0 1em 0;
+      padding: 0 30px;
+      font-family: "Varela Round";
+      font-weight: normal;
+      color: $blue;
+      cursor: pointer;
+
+      &:active {
+         filter: brightness(0.9);
+      }
+   }
+
+   .login-form, .signup-form {
+      animation: fadein 0.35s;
+   }
+
    form {
-      padding: 0 2em;
+      padding: 0 30px;
+   }
+
+   .submit-container {
+      display: flex;
+      align-items: center;
+      margin: 1em 0;
+
+      .container {
+         margin-left: 1em;
+         animation: fadein 0.15s;
+      }
    }
 
    .submit-button {
+      font-family: "Varela Round";
       appearance: none;
 		font-size: 1.3em;
     	height: 2em;
     	width: 6em;
-    	margin: 1em 0 0.5em 0;
-    	border: none;
-    	border-radius: 2px;
-    	background: #16AC61;
-    	color: white;
-    	box-shadow: 0 2px 1px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    	border: 2px solid #2d9cdb;
+      color: $blue;
+    	border-radius: 8px;
     	outline: none;
     	cursor: pointer;
+
+      &:active {
+         filter: brightness(0.9);
+      }
    }
 }

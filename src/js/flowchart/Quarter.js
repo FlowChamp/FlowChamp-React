@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Block from './Block';
+import { /*DragDropContext,*/ Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default class Quarter extends Component {
 	constructor(props) {
@@ -14,12 +15,15 @@ export default class Quarter extends Component {
       this.props.onEvent(options);
    }
 
-   getBlockComponents = () => {
+   getBlockComponents = (provided) => {
       const data = this.state.data;
-      let blockComponents = data.map(meta => {
+      let blockComponents = data.map((meta, index) => {
          return (
             <Block
                key={meta.block_metadata._id}
+               _key={meta.block_metadata._id}
+               provided={provided}
+               index={index}
                data={meta}
                onEvent={this.handleEvent}
             />
@@ -47,6 +51,14 @@ export default class Quarter extends Component {
       this.getUnitCount();
    }
 
+  	onDragEnd(result) {
+    	// dropped outside the list
+    	if (!result.destination) {
+      	return;
+    	}
+		console.log("REORDERED");
+  	}
+
    render() {
       return (
          <div className="quarter">
@@ -58,9 +70,27 @@ export default class Quarter extends Component {
                   {this.state.unitCount} Units
                </h3>
             </div>
-            <div className="block-container">
-               {this.getBlockComponents()}
-            </div>
+            <Droppable droppableId={`droppable-${this.props.index}`}>
+               {(provided, snapshot) => (
+                  <div className="block-container"
+                     ref={provided.innerRef}>
+                     {this.state.data.map((item, index) => (
+                        <Draggable key={item.block_metadata._id} draggableId={item.block_metadata._id} index={index}>
+                           {(provided, snapshot) => (
+                              <Block
+                                 key={item.block_metadata._id}
+                                 _key={item.block_metadata._id}
+                                 provided={provided}
+                                 index={index}
+                                 data={item}
+                                 onEvent={this.handleEvent}
+                              />
+                           )}
+                        </Draggable>
+                     ))}
+                  </div>
+               )}
+            </Droppable>
          </div>
       );
    }

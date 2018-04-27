@@ -22,7 +22,11 @@ export default class Header extends Component {
             <div className="header-container center">
                <h3 className="header-title">{this.props.name}</h3>
             </div>
-            <div className="header-container right"></div>
+            <div className="header-container right">
+               {this.props.currentChart.data && !this.props.user.requireAuth
+                  ? <h3>EDIT</h3>
+                  : ''}
+            </div>
          </div>
       );
    }

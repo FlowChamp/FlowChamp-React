@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Year from './Year';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 const years = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
 
@@ -34,6 +35,7 @@ export default class Flowchart extends Component {
          yearComponents.push(
             <Year
                key={year}
+               index={year}
                data={yearData}
                title={year}
                onEvent={this.handleEvent}
@@ -43,13 +45,19 @@ export default class Flowchart extends Component {
       return yearComponents;
    }
 
+   onDragEnd = (result) => {
+      console.log(result);
+   }
+
    render() {
       return (
-         <div className="flowchart">
-            <div className="year-container">
-               {this.getYearComponents()}
+         <DragDropContext onDragEnd={this.onDragEnd}>
+            <div className="flowchart">
+               <div className="year-container">
+                  {this.getYearComponents()}
+               </div>
             </div>
-         </div>
+			</DragDropContext>
       );
    }
 }

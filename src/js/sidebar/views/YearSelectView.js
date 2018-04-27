@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import NavButton from '../components/NavButton';
+import UserManager from '../../UserManager';
 
-export default class ChartSelectView extends Component {
+export default class YearSelectView extends Component {
 	constructor(props) {
 		super(props);
       this.state = {
@@ -29,50 +30,35 @@ export default class ChartSelectView extends Component {
       );
    }
 
-   getStockChartButtons() {
-      const departments = this.state.data;
-      let index = 0;
+   setYear = year => {
+      UserManager.updateConfig({
+         field: 'starting_year',
+         value: year
+      });
+   }
+
+   getYearButtons() {
+      const currentYear = new Date().getFullYear();
       let buttons = [];
+      console.log(currentYear);
 
-      for (let department in departments) {
-         const deptObj = departments[department];
-         const name = Object.keys(deptObj)[0];
-         const dept = deptObj[Object.keys(deptObj)[0]];
-         const text = name.split('_').join(' ');
-
+      for (let i=currentYear; i>currentYear-10; i--) {
          buttons.push(
             <NavButton
-               key={text}
-               name={name}
-               index={index}
-               dept={dept}
-               action={{
-                  type: 'change-chart',
-                  value: name,
-                  demo: this.props.isDemo,
-                  closeMenu: true,
+               key={i}
+               name={i}
+               index={i}
+               action={() => {
+                  UserManager.updateConfig({
+                     field: 'starting_year',
+                     value: i
+                  })
                }}
                onEvent={this.handleEvent}
-               text={text} />
+               text={i} />
          );
-         index++;
       }
       return buttons;
-   }
-
-   componentDidMount() {
-      this.fetchStockCharts();
-   }
-
-   fetchStockCharts = () => {
-		fetch('https://flowchamp.org/api/cpslo/stock_charts/15-17')
-			.then(response => {
-			 	response.json().then((data) => {
-					this.setState({
-						 data: data.charts,
-					});
-			  });
-		 });
    }
 
    render() {
@@ -82,8 +68,7 @@ export default class ChartSelectView extends Component {
             ${this.props.isEnteringNewView ? 'entering-new-view' : ''}
             ${this.props.isEnteringOldView ? 'entering-old-view' : ''}`}>
             <h2 className="sidebar-header">{this.props.header}</h2>
-            {this.getChartBuilderButton()}
-            {this.state.data ? this.getStockChartButtons() : <h3>Loading...</h3>}
+            {this.getYearButtons()}
          </div>
       );
    }

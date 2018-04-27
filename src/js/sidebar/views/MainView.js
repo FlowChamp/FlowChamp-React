@@ -11,7 +11,7 @@ export default class MainView extends Component {
             ${this.props.isPrevView ? 'slide-in-left' : ''}
             ${this.props.isEnteringNewView ? 'entering-new-view' : ''}
             ${this.props.isEnteringOldView ? 'entering-old-view' : ''}`}>
-            <img alt="logo" className="sidebar-logo" src="images/icons/logo.svg"/>
+            <img alt="logo" className="sidebar-logo" src="images/icons/logo_blue.svg"/>
             <h3 className="sidebar-subheader">Flowcharts</h3>
             <ChartSelectWidget
                {...this.props}
@@ -31,6 +31,8 @@ class ChartSelectWidget extends Component {
          this.handleEvent({
             type: 'change-view',
             value: 'login',
+            // Where to go after user logged in
+            route: 'chartSelect',
          });
       } else {
          this.handleEvent({

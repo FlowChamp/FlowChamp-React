@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+//import { Draggable } from 'react-beautiful-dnd';
 
 export default class Block extends Component {
    constructor(props) {
@@ -38,7 +39,6 @@ export default class Block extends Component {
       const courseType = blockMetadata.course_type.toLowerCase().split(' ').join('-');
 
       if (!courseData.length) {
-
          return (
             <div className={`block-contents ${courseType}`}>
                <h3 className="block-title">
@@ -67,7 +67,10 @@ export default class Block extends Component {
 
    render() {
       return (
-         <div className="block" onClick={this.handleClick}>
+         <div className="block"
+            ref={this.props.provided.innerRef}
+            {...this.props.provided.draggableProps}
+            {...this.props.provided.dragHandleProps}>
             {this.state.hasCourseData ? this.setupBlock() : this.setupBlockWithoutCourseData()}
          </div>
       );

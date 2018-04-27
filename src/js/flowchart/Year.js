@@ -33,6 +33,7 @@ export default class Year extends Component {
          quarterComponents.push(
             <Quarter
                key={quarter}
+               index={i}
                data={quarterData}
                title={quarter}
                onEvent={this.handleEvent}

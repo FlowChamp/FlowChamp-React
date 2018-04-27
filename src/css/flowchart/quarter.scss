@@ -4,17 +4,14 @@
    flex: 1;
    padding: 0.5em 2em 0 2em;
    overflow: auto;
-   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .quarter {
    position: relative;
-   display: flex;
-   flex-direction: column;
-   flex: 1;
 }
 
 .quarter-head {
+   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
    display: flex;
    height: 1em;
    align-items: center;

@@ -1,14 +1,14 @@
 .welcome-container {
    position: fixed;
-   top: 0;
+   top: 5em;
    bottom: 20%;
    left: 0;
    right: 0;
 	display: flex;
    flex-direction: column;
    align-items: center;
-   max-height: 10em;
-   max-width: 20em;
+   max-height: 14em;
+   max-width: 14em;
    margin: auto;
 
    &.faded {
@@ -22,25 +22,69 @@
    }
 
    img {
-      max-height: 100%;
-      animation: welcome-fade-up 2s;
       transition: all $duration ease-in-out;
    }
 
    .welcome-title {
-    	font-family: avenir, sans-serif;
-    	font-weight: 400;
-    	color: #15522c;
-    	font-size: 2.5em;
-    	margin: 0.5em;
+      margin-top: 2em;
       animation: welcome-fade-up 2s;
       transition: all $duration ease-in-out;
+   }
+
+   .logo-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      height: 12em;
+      width: 12em;
+      animation: welcome-fade-up 2s;
+   }
+
+   .logo {
+      max-height: 10em;
+      position: absolute;
+      z-index: 1;
+   }
+
+   .logo-back-1, .logo-back-2 {
+      max-height: 8em;
+      position: absolute;
+   }
+
+   .logo-back-1 {
+      transform: translateY(-1em) translateX(-1.5em);
+      animation: logoBackOne 2s;
+   }
+
+   .logo-back-2 {
+      transform: translateY(2em) translateX(1.5em);
+      animation: logoBackTwo 2s;
    }
 
    @keyframes welcome-fade-up {
       0% {
          opacity: 0;
          transform: translateY(50%);
+      }
+   }
+
+   @keyframes logoBackOne {
+      from {
+         transform: translateY(0) translateX(0);
+      }
+
+      100% {
+         transform: translateY(-1em) translateX(-1.5em);
+      }
+   }
+
+   @keyframes logoBackTwo {
+      from {
+         transform: translateY(0) translateX(0);
+      }
+
+      100% {
+         transform: translateY(2em) translateX(1.5em);
       }
    }
 }

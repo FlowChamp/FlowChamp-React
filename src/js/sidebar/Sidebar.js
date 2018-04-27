@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 import SidebarNav from './components/SidebarNav';
 import MainView from './views/MainView';
 import ChartSelectView from './views/ChartSelectView';
+import YearSelectView from './views/YearSelectView';
 import LoginView from './views/LoginView';
+import PinView from './views/PinView';
 import SettingsView from './views/SettingsView';
 
 const views = {
    main: <MainView />,
    chartSelect : <ChartSelectView header="New Flowchart"/>,
+   yearSelect : <YearSelectView header="Starting Year"/>,
    login : <LoginView header="Cal Poly Login"/>,
+   pin : <PinView header="Enter Pin"/>,
    settings : <SettingsView header="Settings"/>,
 }
 
@@ -24,13 +28,37 @@ export default class Sidebar extends Component {
 	}
 
    handleEvent = (options) => {
-      if (options.type === 'change-view') {
-         this.changeView(options);
-      } else if (options.type === 'pop-view') {
-         this.popViewStack();
-      } else {
-         this.props.onEvent(options);
+      console.log(options);
+	   switch(options.type) {
+         case 'change-view':
+            this.changeView(options);
+            break;
+         case 'pop-view':
+            this.popViewStack();
+            break;
+         case 'empty-views':
+            this.mainMenu();
+            break;
+         default:
+            this.props.onEvent(options);
+            break;
       }
+   }
+
+   mainMenu = () => {
+      this.setState(state => {
+         state.isEnteringOldView = true;
+         return state;
+      });
+      setTimeout(() => {
+         this.setState(state => {
+            state.isEnteringOldView = false;
+            state.viewStack = [{
+               view: 'main', props: {}
+             }];
+            return state;
+         });
+      }, 190);
    }
 
    changeView = (options) => {
@@ -47,11 +75,14 @@ export default class Sidebar extends Component {
                props: {
                   isEnteringNewView: this.state.isEnteringNewView,
                   isDemo: !this.props.user.requireAuth,
-                  onEvent: this.handleEvent}
+                  data: options.data,
+                  route: options.route,
+                  onEvent: this.handleEvent
+               }
             });
             return state;
          });
-      }, 250);
+      }, 190);
    }
 
    popViewStack = () => {
@@ -67,25 +98,13 @@ export default class Sidebar extends Component {
             }
             return state;
          });
-      }, 250);
+      }, 190);
    }
 
    closeSidebar = () => {
       this.handleEvent({
          type: 'sidebar',
          action: 'toggle'
-      });
-   }
-
-   emptySidebarViews = () => {
-      let viewStack = this.state.viewStack;
-      console.log(viewStack);
-      while (viewStack.length > 1) {
-         viewStack.pop();
-      }
-      this.setState(state => {
-         state.viewStack = viewStack;
-         return state;
       });
    }
 

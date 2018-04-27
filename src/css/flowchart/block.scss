@@ -1,4 +1,9 @@
+.block-container {
+   margin-top: 0.5em;
+}
+
 .block {
+   font-family: sans-serif;
    height: 9em;
    width: 10em;
    margin: 10px;
@@ -20,6 +25,7 @@
    flex: 1;
    background: lightgray;
    padding: 15px;
+   border-radius: 4px;
 }
 
 .block-title {

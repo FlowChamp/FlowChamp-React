@@ -24,6 +24,7 @@ export default class FlowChamp extends Component {
          data: null,
       },
       currentChart: {
+         isBuilding: false,
          _name: null,
          name: "Welcome",
          data: null,
@@ -52,11 +53,11 @@ export default class FlowChamp extends Component {
          case 'close-course-modal':
             this.closeModal();
             break;
-         case 'login':
-            this.setUserCredentials(options);
-            break;
          case 'user-update':
             this.updateUserConfig(options.value);
+            break;
+         case 'chart-builder':
+            this.toggleChartBuilder(options);
             break;
          default:
             console.log("Empty event: ", options);
@@ -86,7 +87,7 @@ export default class FlowChamp extends Component {
             state.sidebar.isClosing = false;
             return state;
          });
-      }, 340);
+      }, 290);
    }
 
    setModalData = (options) => {
@@ -112,6 +113,17 @@ export default class FlowChamp extends Component {
       });
    }
 
+   toggleChartBuilder = options => {
+      this.setState(state => {
+         state.currentChart.isBuilding = true;
+         state.currentChart._name = 'Chart_Builder';
+         state.currentChart.name = 'Chart Builder';
+         state.currentChart.data = null;
+
+         return state;
+      });
+   }
+
    setCurrentChart = (options) => {
       const url = options.demo
          ? `https://flowchamp.org/api/cpslo/stock_charts/15-17/${options.value}`
@@ -127,6 +139,7 @@ export default class FlowChamp extends Component {
                // Required to refresh the blocks
                this.setState({
                   currentChart: {
+                     isBuilding: false,
                      data: null,
                      _name: null,
                      name: null
@@ -134,6 +147,7 @@ export default class FlowChamp extends Component {
                });
 					this.setState(state => {
 						state.currentChart = {
+                     isBuilding: false,
                      _name: options.value,
                      name: options.value,
                      data: data
@@ -144,32 +158,38 @@ export default class FlowChamp extends Component {
       });
    }
 
-   setUserCredentials = (options) => {
+   signup = options => {
+      const email = options.value.email.toLowerCase();
       const username = options.value.username.toLowerCase();
       const password = options.value.password;
 
-      this.setState(state => {
-         state.user.username = username;
-         state.user.password = password;
-         return state;
-      });
+      UserManager.signup({
+         email: email,
+         username: username,
+         password: password
+      }).then((response) => {
+         console.log(response);
+      })
    }
 
-   updateUserConfig = (user) => {
-      const config = user.config;
+   updateUserConfig = (config) => {
       this.setState(state => {
          state.config = config;
+         state.user.isLoggedIn = true;
          return state;
       });
-      this.setCurrentChart({
-         username: this.state.user.username,
-         chart: config.active_chart,
-      });
+      if (config.active_chart) {
+         this.setCurrentChart({
+            username: config.username,
+            chart: config.active_chart,
+         });
+      }
+      console.log(this.state);
    }
 
    canShowFlowchart = () => {
       return (this.state.user.isLoggedIn || !this.state.user.requireAuth) &&
-         this.state.currentChart.data;
+         (this.state.currentChart.data || this.state.currentChart.isBuilding);
    }
 
    render() {
@@ -180,6 +200,7 @@ export default class FlowChamp extends Component {
                onEvent={this.handleEvent} />
             <Header
                currentChart={this.state.currentChart}
+               user={this.state.user}
                name={this.state.user.isLoggedIn ? this.state.currentChart.name : "Welcome"}
                onEvent = {this.handleEvent} />
             <Sidebar
@@ -196,6 +217,7 @@ export default class FlowChamp extends Component {
             }
             {this.canShowFlowchart()
                ? <Flowchart
+                  isBuilding={this.state.currentChart.isBuilding}
                   scroll={!this.state.modal.isOpen}
                   currentChart={this.state.currentChart}
                   onEvent={this.handleEvent} />
