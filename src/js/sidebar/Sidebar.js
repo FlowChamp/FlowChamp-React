@@ -33,6 +33,9 @@ export default class Sidebar extends Component {
          case 'change-view':
             this.changeView(options);
             break;
+         case 'route':
+            this.changeView(options);
+            break;
          case 'pop-view':
             this.popViewStack();
             break;

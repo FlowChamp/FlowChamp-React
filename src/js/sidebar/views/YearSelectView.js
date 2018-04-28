@@ -13,21 +13,14 @@ export default class YearSelectView extends Component {
 	}
 
    handleEvent(options) {
-      this.props.onEvent(options);
-   }
-
-   getChartBuilderButton = () => {
-      return (
-         <NavButton
-            action={{
-               type: 'chart-builder',
-               value: 'false',
-               demo: this.props.isDemo
-            }}
-            onEvent={this.handleEvent}
-            text="Build your own"
-            />
-      );
+      switch(options.type) {
+         case 'user-update':
+            UserManager.updateConfig(options);
+            break;
+         default:
+            this.props.onEvent(options);
+            break;
+      }
    }
 
    setYear = year => {
@@ -40,7 +33,7 @@ export default class YearSelectView extends Component {
    getYearButtons() {
       const currentYear = new Date().getFullYear();
       let buttons = [];
-      console.log(currentYear);
+      console.log(this.props);
 
       for (let i=currentYear; i>currentYear-10; i--) {
          buttons.push(
@@ -48,11 +41,13 @@ export default class YearSelectView extends Component {
                key={i}
                name={i}
                index={i}
-               action={() => {
-                  UserManager.updateConfig({
+               action={{
+                  type: 'user-update',
+                  value: {
+                     config: this.props.data,
                      field: 'starting_year',
                      value: i
-                  })
+                  }
                }}
                onEvent={this.handleEvent}
                text={i} />

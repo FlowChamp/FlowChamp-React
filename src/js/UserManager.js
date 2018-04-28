@@ -82,7 +82,24 @@ export default class UserManager extends Component {
    }
 
    static updateConfig = options => {
-      console.log(options);
+      return new Promise(function(resolve, reject) {
+         let config = options.value.config;
+         const url = `https://flowchamp.org/api/cpslo/users/${config.username}/config`;
+
+         fetch (url, {
+            mode: 'cors',
+            body: config
+         }).then(response => {
+            response.json().then(data => {
+               console.log(data);
+               resolve(data);
+            });
+         }).catch(e => {
+            console.log(e);
+            reject(Error(e));
+         });
+      });
+
    }
 
    static getCurrentYear() {

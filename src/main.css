@@ -394,6 +394,9 @@
   animation: fadein 0.35s; }
 .sidebar-login-view form {
   padding: 0 30px; }
+.sidebar-login-view .error-msg {
+  color: red;
+  font-weight: normal; }
 .sidebar-login-view .submit-container {
   display: flex;
   align-items: center;
