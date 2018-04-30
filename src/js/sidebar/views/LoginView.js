@@ -105,10 +105,12 @@ class LoginForm extends Component {
          password: password,
          remember: this.state.remember
       }).then((data) => {
-         console.log("User config:", data);
          this.props.onEvent({
             type: 'user-login',
             value: data
+         });
+         this.props.onEvent({
+            type: 'get-active-chart',
          });
          this.props.onEvent({
             type: 'route',

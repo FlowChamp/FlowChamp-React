@@ -60,6 +60,9 @@ export default class FlowChamp extends Component {
          case 'set-active-chart':
             this.setActiveChart(options);
             break;
+         case 'get-active-chart':
+            this.getActiveChart();
+            break;
          case 'chart-builder':
             this.toggleChartBuilder(options);
             break;
@@ -155,18 +158,28 @@ export default class FlowChamp extends Component {
          field: 'active_chart',
          value: chartName
       }).then(() => {
-         UserManager.getActiveChart(config).then(response => {
-            this.setState(state => {
-               state.user.config = config;
-               state.currentChart.name = config['active_chart'];
-               state.currentChart.data = response;
-               return state;
-            });
-         }).catch(e => {
-            console.log("Error: unable to retrieve chart: ", e);
+         this.setState(state => {
+            state.user.config = config;
+            return state;
+         }, () => {
+            this.getActiveChart();
          });
       }).catch(e => {
          console.log("Error: unable to set active chart: ", e);
+      });
+   }
+
+   getActiveChart = () => {
+      const config = this.state.user.config;
+
+      UserManager.getActiveChart(config).then(response => {
+         this.setState(state => {
+            state.currentChart.name = config['active_chart'];
+            state.currentChart.data = response;
+            return state;
+         });
+      }).catch(e => {
+         console.log("Error: unable to retrieve chart: ", e);
       });
    }
 
