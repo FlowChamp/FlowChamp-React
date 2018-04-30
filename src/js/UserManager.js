@@ -1,7 +1,8 @@
 import { Component } from 'react';
 
 const API = {
-   url: 'https://dev.flowchamp.org/api/cpslo'
+   url: '/api/cpslo',
+   mode: null
 }
 
 export default class UserManager extends Component {
@@ -22,7 +23,7 @@ export default class UserManager extends Component {
                'Content-Type': 'application/json'
             },
             method: 'POST',
-            mode: 'cors',
+            mode: API.mode,
             body: data
          }).then(response => {
             response.json().then((data) => {
@@ -50,9 +51,9 @@ export default class UserManager extends Component {
             headers: {
                'Authorization': 'Basic '+btoa(`${options.username}:${options.password}`),
                'Content-Type': 'application/json',
-               'credentials': 'same-origin'
             },
-            mode: 'cors',
+            mode: API.mode,
+            credentials: 'same-origin',
             body: data
          }).then(response => {
             response.json().then((data) => {
@@ -80,9 +81,9 @@ export default class UserManager extends Component {
             headers: {
                'Authorization': 'Basic ' + btoa(`${options.username}:${options.password}`),
                'Content-Type': 'application/json',
-               'credentials': 'same-origin'
             },
-            mode: 'cors',
+            credentials: 'same-origin',
+            mode: API.mode,
             body: data
          }).then(response => {
             if (!response || response.status > 200) {
@@ -104,11 +105,9 @@ export default class UserManager extends Component {
          const url = `${API.url}/users/${config.username.split('-')[1]}/config`;
 
          fetch (url, {
-            headers: {
-               'credentials': 'same-origin'
-            },
             method: 'POST',
-            mode: 'cors',
+            credentials: 'same-origin',
+            mode: API.mode,
             body: config
          }).then(response => {
             response.json().then(data => {
