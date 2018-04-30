@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LoadingIndicator from 'react-loading-indicator';
 import UserManager from '../../UserManager';
+import ToggleButton from '../components/ToggleButton';
 
 export default class LoginView extends Component {
    state = {
@@ -33,8 +34,11 @@ export default class LoginView extends Component {
 
    route = options => {
       let route = this.props.route;
-
-      if (route === 'chartSelect' && !this.props.user.start_year) {
+      if (route === 'empty-views') {
+         this.props.onEvent({
+            type: 'empty-views'
+         });
+      } else if (route === 'chartSelect' && !this.props.user.config.start_year) {
          this.props.onEvent({
             type: 'change-view',
             value: 'yearSelect',
@@ -79,6 +83,7 @@ class LoginForm extends Component {
    state = {
       isLoading: false,
       error: false,
+      remember: false,
    }
 
    signupView = () => {
@@ -98,6 +103,7 @@ class LoginForm extends Component {
       UserManager.login({
          username: username,
          password: password,
+         remember: this.state.remember
       }).then((data) => {
          console.log("User config:", data);
          this.props.onEvent({
@@ -116,6 +122,10 @@ class LoginForm extends Component {
       });
    }
 
+   toggleRemember = checked => {
+      this.setState({ remember: checked });
+   }
+
    render() {
       return (
          <div className="signup-form">
@@ -124,6 +134,11 @@ class LoginForm extends Component {
             <form onSubmit={this.handleSubmit}>
                <input required type="text" placeholder="Username" ref="username" autoFocus/>
                <input required type="password" placeholder="Password" ref="password"/>
+               <ToggleButton
+                  label="Remember me"
+                  classNames={'in-form'}
+                  checked={this.state.remember}
+                  onEvent={this.toggleRemember}/>
                <h3 className="error-msg">{this.state.error}</h3>
                <div className="submit-container">
                   <input className="submit-button" type="submit" value="Log In" />

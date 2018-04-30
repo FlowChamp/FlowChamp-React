@@ -51,7 +51,7 @@ export default class PinView extends Component {
                We sent a 6-digit PIN to <strong>{this.props.data.email}.</strong> Please enter it here to complete signup.
             </h3>
             <form onSubmit={this.handleSubmit}>
-               <input required type="text" placeholder="PIN" ref="pin" autofocus/>
+               <input required type="text" placeholder="PIN" ref="pin" autoFocus/>
                <h3 className="error-msg">{this.state.error}</h3>
                <input className="submit-button" type="submit" value="Complete Signup" />
             </form>

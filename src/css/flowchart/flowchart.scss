@@ -3,4 +3,17 @@
    flex: 1;
    padding-top: 4em;
    height: calc(100vh - 4em);
+
+   &.animate-close {
+      .block {
+         animation: flowchartClose 0.35s !important;
+      }
+   }
+
+   @keyframes flowchartClose {
+      100% {
+         transform: translateX(-10%);
+         opacity: 0;
+      }
+   }
 }

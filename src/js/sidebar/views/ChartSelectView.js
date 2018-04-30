@@ -47,10 +47,12 @@ export default class ChartSelectView extends Component {
                index={index}
                dept={dept}
                action={{
-                  type: 'change-chart',
-                  value: name,
-                  demo: this.props.isDemo,
-                  closeMenu: true,
+                  type: 'change-view',
+                  value: 'chartName',
+                  data: {
+                     _name: name,
+                     name: text
+                  }
                }}
                onEvent={this.handleEvent}
                text={text} />

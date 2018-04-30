@@ -53,13 +53,13 @@ export default class UserManager extends Component {
                'Content-Type': 'application/json',
             },
             mode: API.mode,
-            credentials: 'same-origin',
             body: data
          }).then(response => {
             response.json().then((data) => {
                if (response.status >= 300) {
                   reject(data.message);
                }
+               localStorage.flowChampConfig = JSON.stringify(data);
                resolve(data);
             });
          }).catch(e => {
@@ -68,12 +68,14 @@ export default class UserManager extends Component {
       });
    }
 
+   // Takes a username and password and attempts to authorize.
    static login = options => {
       return new Promise(function(resolve, reject) {
          const url = `${API.url}/authorize`;
          const data = JSON.stringify({
             username: options.username,
-            password: options.password
+            password: options.password,
+            remember: options.remember
          });
 
          fetch (url, {
@@ -90,7 +92,34 @@ export default class UserManager extends Component {
                reject(response.statusText);
             }
             response.json().then((data) => {
-               console.log(response);
+               localStorage.flowChampConfig = JSON.stringify(data);
+               resolve(data);
+            });
+         }).catch(e => {
+            reject(Error(e));
+         });
+      });
+   }
+
+   static addChart(options) {
+      return new Promise(function(resolve, reject) {
+         const data = {
+            target: options.stockName,
+            year: '15-17',
+            destination: options.chartName
+         };
+         const url = `${API.url}/users/${options.config.username}/import`;
+         console.log(data, url);
+
+         fetch (url, {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(data)
+         }).then(response => {
+            response.json().then(data => {
                resolve(data);
             });
          }).catch(e => {
@@ -101,25 +130,93 @@ export default class UserManager extends Component {
 
    static updateConfig = options => {
       return new Promise(function(resolve, reject) {
-         let config = options.value.config;
-         const url = `${API.url}/users/${config.username.split('-')[1]}/config`;
+         let config = options.config;
+         const url = `${API.url}/users/${config.username}/config`;
+
+         // Set the new value at the specified field
+         config[options.field] = options.value;
+
+         fetch (url, {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(config)
+         }).then(response => {
+            response.json().then(data => {
+               if (response.status >= 300) {
+                  reject(response);
+               }
+               localStorage.flowChampConfig = JSON.stringify(config);
+               resolve(data);
+            });
+         }).catch(e => {
+            reject(Error(e));
+         });
+      });
+   }
+
+   static getUserConfig = (username) => {
+      return new Promise(function(resolve, reject) {
+         const url = `${API.url}/users/${username}/config`;
+
+         fetch (url, {
+            method: 'GET',
+            credentials: 'same-origin',
+         }).then(response => {
+            response.json().then(data => {
+               if (response.status >= 300) {
+                  reject(response);
+               }
+               localStorage.flowChampConfig = JSON.stringify(data);
+               resolve(data);
+            });
+         }).catch(e => {
+            reject(Error(e));
+         });
+      });
+   }
+
+   static getActiveChart = (config) => {
+      console.log(config);
+      return new Promise(function(resolve, reject) {
+         const url = `${API.url}/users/${config.username}/charts/${config['active_chart']}`;
+
+         fetch (url, {
+            method: 'GET',
+            credentials: 'same-origin',
+         }).then(response => {
+            response.json().then(data => {
+               if (response.status >= 300) {
+                  reject(response);
+               }
+               resolve(data);
+            });
+         }).catch(e => {
+            reject(Error(e));
+         });
+      });
+   }
+
+   static logOut = (config) => {
+      return new Promise(function(resolve, reject) {
+         const url = `${API.url}/users/${config.username}/logout`;
 
          fetch (url, {
             method: 'POST',
             credentials: 'same-origin',
-            mode: API.mode,
-            body: config
          }).then(response => {
             response.json().then(data => {
-               console.log(data);
+               if (response.status >= 300) {
+                  reject(response);
+               }
                resolve(data);
             });
          }).catch(e => {
-            console.log(e);
             reject(Error(e));
          });
       });
-
    }
 
    static getCurrentYear() {

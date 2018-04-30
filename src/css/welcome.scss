@@ -1,22 +1,28 @@
 .welcome-container {
    position: fixed;
    top: 5em;
-   bottom: 20%;
+   bottom: 0;
    left: 0;
    right: 0;
 	display: flex;
-   flex-direction: column;
+   justify-content: center;
    align-items: center;
-   max-height: 14em;
-   max-width: 14em;
-   margin: auto;
+
+   .welcome {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 20em;
+      margin-bottom: 20%;
+   }
 
    &.faded {
       img {
          filter: grayscale(1) opacity(0.6);
       }
 
-      .welcome-title {
+      .welcome-title, .loading-container {
          opacity: 0;
       }
    }
@@ -26,7 +32,6 @@
    }
 
    .welcome-title {
-      margin-top: 2em;
       animation: welcome-fade-up 2s;
       transition: all $duration ease-in-out;
    }
@@ -59,6 +64,33 @@
    .logo-back-2 {
       transform: translateY(2em) translateX(1.5em);
       animation: logoBackTwo 2s;
+   }
+
+   .loading-container {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeInDelay 1s;
+      transition: all $duration ease-in-out;
+   }
+
+   .message {
+      color: rgb(130, 130, 130);
+   }
+
+   @keyframes fadeInDelay {
+      0% {
+         opacity: 0;
+      }
+      80% {
+         opacity: 0;
+      }
+      100% {
+         opacity: 1;
+      }
    }
 
    @keyframes welcome-fade-up {

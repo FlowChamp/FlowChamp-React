@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SidebarNav from './components/SidebarNav';
 import MainView from './views/MainView';
 import ChartSelectView from './views/ChartSelectView';
+import ChartNameView from './views/ChartNameView';
 import YearSelectView from './views/YearSelectView';
 import LoginView from './views/LoginView';
 import PinView from './views/PinView';
@@ -10,6 +11,7 @@ import SettingsView from './views/SettingsView';
 const views = {
    main: <MainView />,
    chartSelect : <ChartSelectView header="New Flowchart"/>,
+   chartName : <ChartNameView header="Give it a name"/>,
    yearSelect : <YearSelectView header="Starting Year"/>,
    login : <LoginView header="Cal Poly Login"/>,
    pin : <PinView header="Enter Pin"/>,
@@ -56,7 +58,8 @@ export default class Sidebar extends Component {
          this.setState(state => {
             state.isEnteringOldView = false;
             state.viewStack = [{
-               view: 'main', props: {}
+               view: 'main',
+               props: {isEnteringOldView: true}
              }];
             return state;
          });
@@ -103,6 +106,15 @@ export default class Sidebar extends Component {
       }, 190);
    }
 
+   emptyViews = () => {
+      this.setState(state => {
+         state.viewStack =  [{
+            view: 'main', props: {}
+          }];
+          return state;
+      });
+   }
+
    closeSidebar = () => {
       this.handleEvent({
          type: 'sidebar',
@@ -116,8 +128,8 @@ export default class Sidebar extends Component {
       let view = views[stackItem.view];
       stackItem.props.user = this.props.user;
       stackItem.props.onEvent = this.handleEvent;
-      stackItem.props.isEnteringNewView = this.state.isEnteringNewView;
-      stackItem.props.isEnteringOldView = this.state.isEnteringOldView;
+      stackItem.props.isEnteringNewView = stackItem.props.isEnteringOldView ? false : this.state.isEnteringNewView;
+      stackItem.props.isEnteringOldView = stackItem.props.isEnteringOldView ? false :  this.state.isEnteringOldView;
 
       // If a view has saved data, add that memoized data before returning
       // element.

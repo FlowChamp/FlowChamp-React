@@ -11,7 +11,7 @@ export default class FlowChamp extends Component {
       user: {
          requireAuth: true,
          isLoggedIn: false,
-         config: {},
+         config: null,
       },
       sidebar: {
          isOpen: false,
@@ -56,6 +56,9 @@ export default class FlowChamp extends Component {
             break;
          case 'user-update':
             this.updateUserConfig(options.value);
+            break;
+         case 'set-active-chart':
+            this.setActiveChart(options);
             break;
          case 'chart-builder':
             this.toggleChartBuilder(options);
@@ -126,37 +129,10 @@ export default class FlowChamp extends Component {
    }
 
    setCurrentChart = (options) => {
+      console.log(options);
       const url = options.demo
-         ? `https://flowchamp.org/api/cpslo/stock_charts/15-17/${options.value}`
-         : `https://flowchamp.org/api/cpslo/users/${options.username}/charts/${options.chart}`;
-
-	   fetch(url)
-		   .then(response => {
-			   response.json().then((data) => {
-               if (data.message === 'Internal Server Error') {
-                  console.error("Couldn't load that chart.");
-                  return;
-               }
-               // Required to refresh the blocks
-               this.setState({
-                  currentChart: {
-                     isBuilding: false,
-                     data: null,
-                     _name: null,
-                     name: null
-                  }
-               });
-					this.setState(state => {
-						state.currentChart = {
-                     isBuilding: false,
-                     _name: options.value,
-                     name: options.value,
-                     data: data
-                  }
-                  return state;
-               });
-			   })
-      });
+         ? `/api/cpslo/stock_charts/15-17/${options.value}`
+         : `/api/cpslo/users/${options.username}/charts/${options.chart}`;
    }
 
    setUserLoggedIn = options => {
@@ -168,24 +144,76 @@ export default class FlowChamp extends Component {
       });
    }
 
+   setActiveChart = options => {
+      let config = this.state.user.config;
+      const chartName = options.value;
+
+      config['active_chart'] = chartName;
+
+      UserManager.updateConfig({
+         config: config,
+         field: 'active_chart',
+         value: chartName
+      }).then(() => {
+         UserManager.getActiveChart(config).then(response => {
+            this.setState(state => {
+               state.user.config = config;
+               state.currentChart.name = config['active_chart'];
+               state.currentChart.data = response;
+               return state;
+            });
+         }).catch(e => {
+            console.log("Error: unable to retrieve chart: ", e);
+         });
+      }).catch(e => {
+         console.log("Error: unable to set active chart: ", e);
+      });
+   }
+
    updateUserConfig = (config) => {
+      console.log(config);
       this.setState(state => {
          state.config = config;
          state.user.isLoggedIn = true;
+         console.log(this.state);
          return state;
       });
-      if (config.active_chart) {
-         this.setCurrentChart({
-            username: config.username,
-            chart: config.active_chart,
-         });
-      }
-      console.log(this.state);
    }
 
    canShowFlowchart = () => {
       return (this.state.user.isLoggedIn || !this.state.user.requireAuth) &&
          (this.state.currentChart.data || this.state.currentChart.isBuilding);
+   }
+
+   componentDidMount() {
+      const config = localStorage.flowChampConfig
+         ? JSON.parse(localStorage.flowChampConfig) : null;
+
+      if (config) {
+         console.log(config);
+         UserManager.getUserConfig(config.username).then(config => {
+            this.setState(state => {
+               state.user.config = config;
+               state.user.isLoggedIn = true;
+               return state;
+            });
+            UserManager.getActiveChart(config).then(response => {
+               this.setState(state => {
+                  state.currentChart = {
+                     name: config['active_chart'],
+                     data: response
+                  };
+                  console.log(config['active_chart']);
+                  return state;
+               });
+            }).catch(e => {
+               console.log("Unable to load chart: ", e);
+            });
+         }).catch(e => {
+            // User most likely isn't logged in anymore
+            console.log
+         });
+      }
    }
 
    render() {
@@ -213,11 +241,11 @@ export default class FlowChamp extends Component {
             }
             {this.canShowFlowchart()
                ? <Flowchart
-                  isBuilding={this.state.currentChart.isBuilding}
-                  scroll={!this.state.modal.isOpen}
+                  user={this.state.user}
                   currentChart={this.state.currentChart}
                   onEvent={this.handleEvent} />
                : <Welcome
+                  isLoggedIn={this.state.user.isLoggedIn}
                   fadeOut={this.state.sidebar.isOpen && !this.state.sidebar.isClosing}/> }
          </div>
       );

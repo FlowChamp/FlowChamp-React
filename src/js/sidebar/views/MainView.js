@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ChartButton from '../components/ChartButton';
 
 export default class MainView extends Component {
    handleEvent = (options) => {
@@ -22,8 +23,43 @@ export default class MainView extends Component {
 }
 
 class ChartSelectWidget extends Component {
+   constructor() {
+      super();
+      this.state = {
+         charts: null,
+      }
+   }
+
    handleEvent = (options) => {
       this.props.onEvent(options);
+   }
+
+   getChartData = () => {
+      if (!this.props.user.isLoggedIn) {
+         return;
+      }
+      this.setState({charts: this.props.user.config.charts});
+   }
+
+   getChartButtons = () => {
+      if (!this.props.user.isLoggedIn) {
+         return;
+      }
+      const config = this.props.user.config;
+      const chartButtons = [];
+
+      for (let name in this.state.charts) {
+         chartButtons.push(
+            <ChartButton
+               key={name}
+               isActive={config['active_chart'] === name}
+               chartName={name}
+               stockChartName={config.charts[name]}
+               onEvent={this.handleEvent}
+               />
+         );
+      }
+      return chartButtons;
    }
 
    newChart = () => {
@@ -43,9 +79,24 @@ class ChartSelectWidget extends Component {
       }
    }
 
+   componentDidMount() {
+      this.getChartData();
+   }
+
+   componentWillReceiveProps(nextProps) {
+      if (!nextProps.user.config) {
+         return;
+      }
+      this.setState(state => {
+         state.charts = nextProps.user.config.charts;
+         return state;
+      });
+   }
+
    render() {
       return (
          <div className="chart-select-container">
+            {this.getChartButtons()}
             <h3 className="new-chart-button"
              onClick={this.newChart}>+</h3>
          </div>

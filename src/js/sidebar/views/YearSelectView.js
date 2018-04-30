@@ -24,9 +24,19 @@ export default class YearSelectView extends Component {
    }
 
    setYear = year => {
+      console.log(this.props);
       UserManager.updateConfig({
-         field: 'starting_year',
+         config: this.props.user.config,
+         field: 'start_year',
          value: year
+      }).then(response => {
+         this.props.onEvent({
+            type: 'change-view',
+            value: this.props.route
+         });
+      }).catch(e => {
+         console.log("Error when updating config:");
+         console.log(e);
       });
    }
 
@@ -40,15 +50,8 @@ export default class YearSelectView extends Component {
                key={i}
                name={i}
                index={i}
-               action={{
-                  type: 'user-update',
-                  value: {
-                     config: this.props.data,
-                     field: 'starting_year',
-                     value: i
-                  }
-               }}
-               onEvent={this.handleEvent}
+               data={i}
+               onEvent={this.setYear}
                text={i} />
          );
       }

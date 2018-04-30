@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 export default class NavButton extends Component {
    handleEvent = () => {
-      this.props.onEvent(this.props.action);
+      this.props.onEvent(this.props.data || this.props.action);
    }
 
    render() {

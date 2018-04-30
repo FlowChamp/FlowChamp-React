@@ -6,6 +6,16 @@
    cursor: pointer;
    transition: all 0.1s ease;
 
+   &.in-form {
+      margin: 0;
+      border-bottom: none;
+      animation: none;
+
+      &:hover {
+         background: white;
+      }
+   }
+
    &:hover {
       background: rgba(0,0,0,0.05);
    }

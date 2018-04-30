@@ -9,7 +9,8 @@ export default class Flowchart extends Component {
       super(props);
       this.state = {
          name: props.currentChart.name,
-         data: props.currentChart.data
+         data: props.currentChart.data,
+         animateClose: false,
       }
    }
 
@@ -45,16 +46,35 @@ export default class Flowchart extends Component {
       return yearComponents;
    }
 
+   componentWillReceiveProps(nextProps) {
+      if (nextProps.currentChart.name !== this.state.name) {
+         this.setState({
+            animateClose: true
+         });
+         setTimeout(() => {
+            this.setState({
+               name: nextProps.currentChart.name,
+               data: nextProps.currentChart.data,
+               animateClose: false
+            });
+         }, 340);
+      }
+   }
+
    onDragEnd = (result) => {
       console.log(result);
    }
 
    render() {
+      const {
+         animateClose
+      } = this.state;
+
       return (
          <DragDropContext onDragEnd={this.onDragEnd}>
-            <div className="flowchart">
+            <div className={`flowchart ${animateClose ? 'animate-close' : ''}`}>
                <div className="year-container">
-                  {this.getYearComponents()}
+                  {this.state.data ? this.getYearComponents() : null}
                </div>
             </div>
 			</DragDropContext>

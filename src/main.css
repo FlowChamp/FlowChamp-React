@@ -194,7 +194,8 @@
   font-style: italic;
   src: url("https://sf.abarba.me/SFMono-SemiboldItalic.otf"); }
 html, body {
-  -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased; }
 
 .FlowChamp {
   font-family: 'Varela Round', sans-serif;
@@ -471,23 +472,26 @@ html, body {
 .welcome-container {
   position: fixed;
   top: 5em;
-  bottom: 20%;
+  bottom: 0;
   left: 0;
   right: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-height: 14em;
-  max-width: 14em;
-  margin: auto; }
+  justify-content: center;
+  align-items: center; }
+  .welcome-container .welcome {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 20em;
+    margin-bottom: 20%; }
   .welcome-container.faded img {
     filter: grayscale(1) opacity(0.6); }
-  .welcome-container.faded .welcome-title {
+  .welcome-container.faded .welcome-title, .welcome-container.faded .loading-container {
     opacity: 0; }
   .welcome-container img {
     transition: all 0.2s ease-in-out; }
   .welcome-container .welcome-title {
-    margin-top: 2em;
     animation: welcome-fade-up 2s;
     transition: all 0.2s ease-in-out; }
   .welcome-container .logo-container {
@@ -510,6 +514,24 @@ html, body {
   .welcome-container .logo-back-2 {
     transform: translateY(2em) translateX(1.5em);
     animation: logoBackTwo 2s; }
+  .welcome-container .loading-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeInDelay 1s;
+    transition: all 0.2s ease-in-out; }
+  .welcome-container .message {
+    color: #828282; }
+@keyframes fadeInDelay {
+  0% {
+    opacity: 0; }
+  80% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
 @keyframes welcome-fade-up {
   0% {
     opacity: 0;
@@ -581,7 +603,12 @@ html, body {
   flex: 1;
   padding-top: 4em;
   height: calc(100vh - 4em); }
-
+  .flowchart.animate-close .block {
+    animation: flowchartClose 0.35s !important; }
+@keyframes flowchartClose {
+  100% {
+    transform: translateX(-10%);
+    opacity: 0; } }
 .year-container {
   position: fixed;
   display: flex;
@@ -686,6 +713,12 @@ html, body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   cursor: pointer;
   transition: all 0.1s ease; }
+  .nav-button.in-form {
+    margin: 0;
+    border-bottom: none;
+    animation: none; }
+    .nav-button.in-form:hover {
+      background: white; }
   .nav-button:hover {
     background: rgba(0, 0, 0, 0.05); }
   .nav-button h3 {
@@ -1152,5 +1185,37 @@ textarea.materialize-textarea {
 /* icon prefix focus color */
 .input-field label.active {
   color: blue !important; }
+
+.chart-button {
+  display: flex;
+  border-left: 0.5em solid transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: all 0.15s ease; }
+  .chart-button:hover {
+    background: rgba(0, 0, 0, 0.05); }
+  .chart-button.active {
+    border-left: 0.5em solid #2d9cdb; }
+  .chart-button .info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1; }
+  .chart-button .chart-title {
+    margin: 16px 0 5px 16px;
+    font-family: "Varela Round"; }
+  .chart-button .chart-type {
+    font-weight: normal;
+    margin: 0 0 16px 16px; }
+  .chart-button .action-container {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5em;
+    cursor: pointer;
+    transition: all 0.15s ease; }
+    .chart-button .action-container:hover {
+      background: #f0f0f0; }
+      .chart-button .action-container:hover .delete-button {
+        color: red; }
 
 /*# sourceMappingURL=main.css.map */
