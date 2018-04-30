@@ -193,6 +193,9 @@
   font-weight: 600;
   font-style: italic;
   src: url("https://sf.abarba.me/SFMono-SemiboldItalic.otf"); }
+html, body {
+  -webkit-tap-highlight-color: transparent; }
+
 .FlowChamp {
   font-family: 'Varela Round', sans-serif;
   position: absolute;
@@ -291,7 +294,8 @@
 
 .sidebar-view-container {
   flex: 1;
-  overflow: auto; }
+  overflow: auto;
+  -webkit-overflow-scrolling: touch; }
 
 .sidebar-header {
   font-family: "Varela Round";
@@ -384,7 +388,6 @@
 .sidebar-login-view .signup-button {
   margin: 0 0 1em 0;
   padding: 0 30px;
-  font-family: "Varela Round";
   font-weight: normal;
   color: #2d9cdb;
   cursor: pointer; }
@@ -394,6 +397,11 @@
   animation: fadein 0.35s; }
 .sidebar-login-view form {
   padding: 0 30px; }
+.sidebar-login-view .info {
+  font-weight: normal;
+  color: #646464;
+  padding: 0.5em 27px;
+  margin: 0; }
 .sidebar-login-view .error-msg {
   color: red;
   font-weight: normal; }
@@ -405,18 +413,18 @@
     margin-left: 1em;
     animation: fadein 0.15s; }
 .sidebar-login-view .submit-button {
-  font-family: "Varela Round";
   appearance: none;
   font-size: 1.3em;
   height: 2em;
-  width: 6em;
   border: 2px solid #2d9cdb;
   color: #2d9cdb;
   border-radius: 8px;
   outline: none;
-  cursor: pointer; }
+  cursor: pointer;
+  transition: all 0.15s ease; }
   .sidebar-login-view .submit-button:active {
-    filter: brightness(0.9); }
+    background: #2d9cdb;
+    color: white; }
 
 .header {
   position: fixed;
@@ -582,6 +590,7 @@
   left: 0;
   right: 0;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   animation: fadein 0.35s; }
 
 .year {
@@ -602,7 +611,8 @@
   display: flex;
   flex: 1;
   padding: 0.5em 2em 0 2em;
-  overflow: auto; }
+  overflow: auto;
+  -webkit-overflow-scrolling: touch; }
 
 .quarter {
   position: relative; }

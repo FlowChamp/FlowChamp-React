@@ -1,5 +1,9 @@
 $blue: #2d9cdb;
 
+html, body {
+   -webkit-tap-highlight-color: transparent;
+}
+
 .FlowChamp {
    font-family: 'Varela Round', sans-serif;
    position: absolute;

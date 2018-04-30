@@ -33,7 +33,6 @@ export default class YearSelectView extends Component {
    getYearButtons() {
       const currentYear = new Date().getFullYear();
       let buttons = [];
-      console.log(this.props);
 
       for (let i=currentYear; i>currentYear-10; i--) {
          buttons.push(

@@ -7,6 +7,7 @@
     "react": "^16.2.0",
     "react-beautiful-dnd": "^6.0.1",
     "react-dom": "^16.2.0",
+    "react-fastclick": "^3.0.2",
     "react-feather": "^1.0.8",
     "react-ios-switch": "^0.1.19",
     "react-loading-indicator": "^1.0.2",

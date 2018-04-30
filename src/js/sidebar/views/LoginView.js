@@ -33,7 +33,7 @@ export default class LoginView extends Component {
 
    route = options => {
       let route = this.props.route;
-      console.log(route);
+
       if (route === 'chartSelect' && !this.props.user.start_year) {
          this.props.onEvent({
             type: 'change-view',
@@ -78,6 +78,7 @@ export default class LoginView extends Component {
 class LoginForm extends Component {
    state = {
       isLoading: false,
+      error: false,
    }
 
    signupView = () => {
@@ -89,16 +90,28 @@ class LoginForm extends Component {
    handleSubmit = (e) => {
       this.setState({isLoading: true});
       if (e) e.preventDefault();
-      const email = this.refs.email.value;
+      const username = this.refs.username.value;
       const password = this.refs.password.value;
 
+      this.setState({ error: false });
+
       UserManager.login({
-         email: email,
+         username: username,
          password: password,
       }).then((data) => {
+         console.log("User config:", data);
+         this.props.onEvent({
+            type: 'user-login',
+            value: data
+         });
          this.props.onEvent({
             type: 'route',
 				data: data,
+         });
+      }).catch(error => {
+         this.setState({
+            error: "Check your username or password",
+            isLoading: false
          });
       });
    }
@@ -109,11 +122,12 @@ class LoginForm extends Component {
             <h3 className="signup-button"
                onClick={this.signupView}>Need an account? &gt;</h3>
             <form onSubmit={this.handleSubmit}>
-               <input required type="text" placeholder="Email" ref="email" autoFocus/>
+               <input required type="text" placeholder="Username" ref="username" autoFocus/>
                <input required type="password" placeholder="Password" ref="password"/>
+               <h3 className="error-msg">{this.state.error}</h3>
                <div className="submit-container">
                   <input className="submit-button" type="submit" value="Log In" />
-                  <div className="container">
+                  <div className="loading-indicator">
                   {this.state.isLoading
                      ? <LoadingIndicator className="loading-indicator"
                         segmentLength={8} segmentWidth={3}/> : ''}
@@ -159,24 +173,17 @@ class SignupForm extends Component {
       UserManager.requestPin({
          email: email
       }).then((response) => {
-         switch(response.message) {
-            case 'Internal Server Error':
-               alert("500 :/");
-            break;
-            default:
-               console.log(response.message);
-               this.props.onEvent({
-                  type: 'change-view',
-                  value: 'pin',
-                  data: {
-                     email: email,
-                     username: username,
-                     password: password,
-                  },
-                  route: 'chart-select'
-               });
-            break;
-         }
+         this.props.onEvent({
+            type: 'change-view',
+            value: 'pin',
+            data: {
+               email: email,
+               username: username,
+               password: password,
+               token: response.token
+            },
+            route: 'chartSelect'
+         });
       }).catch((error) => {
          alert(error);
       });
@@ -210,10 +217,10 @@ class SignupForm extends Component {
                <input required type="text" placeholder="Email" ref="email"/>
                <input required type="password" placeholder="Password" ref="password"/>
                <input required type="password" placeholder="Retype Password" ref="password2"/>
-               {error ? <h3 className="error-msg">{error}</h3> : null}
+               <h3 className="error-msg">{error}</h3>
                <div className="submit-container">
                   <input className="submit-button" type="submit" value="Sign Up" />
-                  <div className="container">
+                  <div className="loading-indicator">
                   {this.state.isLoading
                      ? <LoadingIndicator className="loading-indicator"
                         segmentLength={8} segmentWidth={3}/> : ''}

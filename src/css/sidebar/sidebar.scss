@@ -98,6 +98,7 @@ $sidebarDuration: 0.3s;
 .sidebar-view-container {
    flex: 1;
    overflow: auto;
+   -webkit-overflow-scrolling: touch;
 }
 
 .sidebar-header {

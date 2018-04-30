@@ -28,7 +28,6 @@ export default class Sidebar extends Component {
 	}
 
    handleEvent = (options) => {
-      console.log(options);
 	   switch(options.type) {
          case 'change-view':
             this.changeView(options);

@@ -11,8 +11,6 @@ export default class FlowChamp extends Component {
       user: {
          requireAuth: true,
          isLoggedIn: false,
-         username: null,
-         password: null,
          config: {},
       },
       sidebar: {
@@ -52,6 +50,9 @@ export default class FlowChamp extends Component {
             break;
          case 'close-course-modal':
             this.closeModal();
+            break;
+         case 'user-login':
+            this.setUserLoggedIn(options);
             break;
          case 'user-update':
             this.updateUserConfig(options.value);
@@ -158,18 +159,13 @@ export default class FlowChamp extends Component {
       });
    }
 
-   signup = options => {
-      const email = options.value.email.toLowerCase();
-      const username = options.value.username.toLowerCase();
-      const password = options.value.password;
-
-      UserManager.signup({
-         email: email,
-         username: username,
-         password: password
-      }).then((response) => {
-         console.log(response);
-      })
+   setUserLoggedIn = options => {
+      this.setState(state => {
+         state.user.isLoggedIn = true;
+         state.user.config = options.value;
+         console.log(`User ${options.value.username} successfully logged in`);
+         return state;
+      });
    }
 
    updateUserConfig = (config) => {

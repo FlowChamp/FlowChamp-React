@@ -1,5 +1,9 @@
 import { Component } from 'react';
 
+const API = {
+   url: '/api/cpslo'
+}
+
 export default class UserManager extends Component {
 	constructor(props) {
 		super(props);
@@ -10,18 +14,20 @@ export default class UserManager extends Component {
 
    static requestPin = options => {
       return new Promise(function(resolve, reject) {
-         const url = "https://flowchamp.org/api/cpslo/getpin";
+         const url = `${API.url}/getpin`;
          const data = JSON.stringify({email: options.email});
 
          fetch (url, {
             headers: {
                'Content-Type': 'application/json'
             },
-            mode: 'cors',
             method: 'POST',
             body: data
          }).then(response => {
             response.json().then((data) => {
+               if (response.status >= 300) {
+                  reject(data.message)
+               }
                resolve(data);
             });
          }).catch(e => {
@@ -32,21 +38,25 @@ export default class UserManager extends Component {
 
    static signup = options => {
       return new Promise(function(resolve, reject) {
-         const url = "https://flowchamp.org/api/cpslo/signup";
+         const url = `${API.url}/signup`;
          const data = JSON.stringify({
+            token: options.token,
             pin: options.pin
          });
 
          fetch (url, {
             headers: {
-               'Authorization': 'Basic '+btoa(`${options.email}:${options.password}`),
+               'Authorization': 'Basic '+btoa(`${options.username}:${options.password}`),
                'Content-Type': 'application/json'
+               'credentials': 'same-origin'
             },
-            mode: 'cors',
             method: 'POST',
             body: data
          }).then(response => {
             response.json().then((data) => {
+               if (response.status >= 300) {
+                  reject(data.message);
+               }
                resolve(data);
             });
          }).catch(e => {
@@ -57,22 +67,26 @@ export default class UserManager extends Component {
 
    static login = options => {
       return new Promise(function(resolve, reject) {
-         const url = "https://flowchamp.org/api/cpslo/authorize";
+         const url = `${API.url}/authorize`;
          const data = JSON.stringify({
-            email: options.email,
+            username: options.username,
             password: options.password
          });
 
          fetch (url, {
+            method: 'POST',
             headers: {
-               'Authorization': 'Basic '+btoa(`${options.email}:${options.password}`),
+               'Authorization': 'Basic ' + btoa(`${options.username}:${options.password}`),
                'Content-Type': 'application/json'
             },
-            mode: 'cors',
-            method: 'POST',
+            credentials: 'same-origin',
             body: data
          }).then(response => {
+            if (!response || response.status > 200) {
+               reject(response.statusText);
+            }
             response.json().then((data) => {
+               console.log(response);
                resolve(data);
             });
          }).catch(e => {
@@ -84,10 +98,11 @@ export default class UserManager extends Component {
    static updateConfig = options => {
       return new Promise(function(resolve, reject) {
          let config = options.value.config;
-         const url = `https://flowchamp.org/api/cpslo/users/${config.username}/config`;
+         const url = `${API.url}/users/${config.username.split('-')[1]}/config`;
 
          fetch (url, {
-            mode: 'cors',
+            method: 'POST',
+            credentials: 'include',
             body: config
          }).then(response => {
             response.json().then(data => {

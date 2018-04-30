@@ -14,7 +14,6 @@
    .signup-button {
       margin: 0 0 1em 0;
       padding: 0 30px;
-      font-family: "Varela Round";
       font-weight: normal;
       color: $blue;
       cursor: pointer;
@@ -30,6 +29,13 @@
 
    form {
       padding: 0 30px;
+   }
+
+   .info {
+      font-weight: normal;
+      color: rgb(100,100,100);
+      padding: 0.5em 27px;
+      margin: 0;
    }
 
    .error-msg {
@@ -49,19 +55,19 @@
    }
 
    .submit-button {
-      font-family: "Varela Round";
       appearance: none;
 		font-size: 1.3em;
     	height: 2em;
-    	width: 6em;
     	border: 2px solid #2d9cdb;
       color: $blue;
     	border-radius: 8px;
     	outline: none;
     	cursor: pointer;
+      transition: all 0.15s ease;
 
       &:active {
-         filter: brightness(0.9);
+         background: $blue;
+         color: white;
       }
    }
 }
