@@ -1,7 +1,7 @@
 import { Component } from 'react';
 
 const API = {
-   url: '/api/cpslo'
+   url: 'https://dev.flowchamp.org/api/cpslo'
 }
 
 export default class UserManager extends Component {
@@ -22,6 +22,7 @@ export default class UserManager extends Component {
                'Content-Type': 'application/json'
             },
             method: 'POST',
+            mode: 'cors',
             body: data
          }).then(response => {
             response.json().then((data) => {
@@ -45,12 +46,13 @@ export default class UserManager extends Component {
          });
 
          fetch (url, {
+            method: 'POST',
             headers: {
                'Authorization': 'Basic '+btoa(`${options.username}:${options.password}`),
-               'Content-Type': 'application/json'
+               'Content-Type': 'application/json',
                'credentials': 'same-origin'
             },
-            method: 'POST',
+            mode: 'cors',
             body: data
          }).then(response => {
             response.json().then((data) => {
@@ -77,9 +79,10 @@ export default class UserManager extends Component {
             method: 'POST',
             headers: {
                'Authorization': 'Basic ' + btoa(`${options.username}:${options.password}`),
-               'Content-Type': 'application/json'
+               'Content-Type': 'application/json',
+               'credentials': 'same-origin'
             },
-            credentials: 'same-origin',
+            mode: 'cors',
             body: data
          }).then(response => {
             if (!response || response.status > 200) {
@@ -101,8 +104,11 @@ export default class UserManager extends Component {
          const url = `${API.url}/users/${config.username.split('-')[1]}/config`;
 
          fetch (url, {
+            headers: {
+               'credentials': 'same-origin'
+            },
             method: 'POST',
-            credentials: 'include',
+            mode: 'cors',
             body: config
          }).then(response => {
             response.json().then(data => {
