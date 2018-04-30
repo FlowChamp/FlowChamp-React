@@ -11,7 +11,11 @@ export default class ChartButton extends Component {
       }
    }
 
-   handleEvent = () => {
+   handleEvent = options => {
+      this.props.onEvent(options);
+   }
+
+   setActiveChart = () => {
       if (this.state.isActive) {
          return;
       }
@@ -38,19 +42,41 @@ export default class ChartButton extends Component {
 
       return (
          <div className={`chart-button ${isActive ? 'active' : ''}`}
-            onClick={this.handleEvent}>
+            onClick={this.setActiveChart}>
             <div className="info-container">
                <h3 className="chart-title">{this.props.chartName}</h3>
                <h5 className="chart-type">{this.props.stockChartName.split('_').join(' ')}</h5>
             </div>
-            <div className="loading-container">
-            </div>
-            <div className="action-container">
-               {this.state.isLoading
-                  ? <LoadingIndicator className="loading-indicator"/>
-                  : <X className="delete-button" onClick={this.deleteChart} />}
-            </div>
+            <ActionContainer
+               name={this.props.chartName}
+               onEvent={this.handleEvent} />
          </div>
+      );
+   }
+}
+
+class ActionContainer extends Component {
+   state = {
+      isLoading: false
+   }
+
+   deleteChart = (e) => {
+      e.stopPropagation();
+      this.setState({ isLoading: true });
+      this.props.onEvent({
+         type: 'delete-chart',
+         value: this.props.name
+      });
+   }
+
+   render() {
+      return(
+         <div className="action-container" onClick={this.deleteChart}>
+            {this.state.isLoading
+               ? <LoadingIndicator className="loading-indicator"/>
+               : <X className="delete-button" />}
+         </div>
+
       );
    }
 }

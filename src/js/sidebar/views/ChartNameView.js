@@ -15,7 +15,6 @@ export default class ChartNameView extends Component {
       this.setState({isLoading: true});
       if (e) e.preventDefault();
       const chartName = this.refs.chartName.value;
-      console.log(chartName);
 
       UserManager.addChart({
          config: this.props.user.config,

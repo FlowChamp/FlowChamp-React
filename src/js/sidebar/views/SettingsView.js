@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ToggleButton from '../components/ToggleButton';
+import NavButton from '../components/NavButton';
 
 export default class SettingsView extends Component {
 	constructor(props) {
@@ -11,19 +12,26 @@ export default class SettingsView extends Component {
    getSettingsEvents = () => {
       const isDemo = this.props.isDemo;
       return {
-         'demo': {
-            type: 'toggle',
-            label: 'Demo Mode',
-            value: isDemo,
+         'clear-cache': {
+            type: 'button',
+            label: 'Clear cache',
             action: {
-               type: 'demo'
+               type: 'clear-cache'
             }
          }
       };
    }
 
    handleEvent = (options) => {
-      this.props.onEvent(options);
+      switch(options.type) {
+         case 'clear-cache':
+            localStorage.flowChampConfig = null;
+            window.location.reload();
+            break;
+         default:
+            this.props.onEvent(options);
+            break;
+      }
    }
 
    getSettingsButtons = () => {
@@ -38,6 +46,13 @@ export default class SettingsView extends Component {
                   key={options.label}
                   checked={options.value}
                   onEvent={() => {this.handleEvent(options.action)}}/>
+            );
+         } else {
+            settingsButtons.push(
+               <NavButton
+                  text={options.label}
+                  action={options.action}
+                  onEvent={this.handleEvent}/>
             );
          }
       }

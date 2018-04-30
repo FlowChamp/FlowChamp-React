@@ -25,7 +25,7 @@ export default class Welcome extends Component {
                <img className="welcome-title" alt="flowchamp" src="images/icons/flowchamp.svg" />
                {this.state.isLoading
                   ? <div className="loading-container">
-                     <h3 className="message">Loading your charts...</h3>
+                     <h3 className="message">Loading chart...</h3>
                      <div>
                         <LoadingIndicator className="loading-indicator"
                            segmentLength={8} segmentWidth={3}/>

@@ -69,10 +69,11 @@ export default class Flowchart extends Component {
       const {
          animateClose
       } = this.state;
+      const classNames = `${animateClose ? 'animate-close' : ''} ${this.props.noScroll ? 'no-scroll' : ''}`;
 
       return (
          <DragDropContext onDragEnd={this.onDragEnd}>
-            <div className={`flowchart ${animateClose ? 'animate-close' : ''}`}>
+            <div className={`flowchart ${classNames}`}>
                <div className="year-container">
                   {this.state.data ? this.getYearComponents() : null}
                </div>

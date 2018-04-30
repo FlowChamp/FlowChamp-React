@@ -267,6 +267,10 @@ html, body {
     cursor: pointer;
     margin-right: 0.5em;
     color: #428bd2; }
+  .sidebar-nav-container .loading-container {
+    display: flex;
+    align-items: center;
+    padding: 0 11px; }
   .sidebar-nav-container .back-icon {
     stroke-width: 2;
     margin-left: 0.5em;
@@ -417,6 +421,7 @@ html, body {
   appearance: none;
   font-size: 1.3em;
   height: 2em;
+  margin-right: 1em;
   border: 2px solid #2d9cdb;
   color: #2d9cdb;
   border-radius: 8px;
@@ -487,8 +492,10 @@ html, body {
     margin-bottom: 20%; }
   .welcome-container.faded img {
     filter: grayscale(1) opacity(0.6); }
-  .welcome-container.faded .welcome-title, .welcome-container.faded .loading-container {
+  .welcome-container.faded .welcome-title, .welcome-container.faded .message {
     opacity: 0; }
+  .welcome-container.faded .message {
+    animation: fadein 0.25s; }
   .welcome-container img {
     transition: all 0.2s ease-in-out; }
   .welcome-container .welcome-title {
@@ -605,6 +612,8 @@ html, body {
   height: calc(100vh - 4em); }
   .flowchart.animate-close .block {
     animation: flowchartClose 0.35s !important; }
+  .flowchart.no-scroll .year-container {
+    overflow: hidden; }
 @keyframes flowchartClose {
   100% {
     transform: translateX(-10%);
@@ -1217,5 +1226,8 @@ textarea.materialize-textarea {
       background: #f0f0f0; }
       .chart-button .action-container:hover .delete-button {
         color: red; }
+
+.loading-container {
+  animation: fadein 0.3s; }
 
 /*# sourceMappingURL=main.css.map */

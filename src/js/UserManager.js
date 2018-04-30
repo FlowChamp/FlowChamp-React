@@ -109,7 +109,6 @@ export default class UserManager extends Component {
             destination: options.chartName
          };
          const url = `${API.url}/users/${options.config.username}/import`;
-         console.log(data, url);
 
          fetch (url, {
             method: 'POST',
@@ -135,6 +134,9 @@ export default class UserManager extends Component {
 
          // Set the new value at the specified field
          config[options.field] = options.value;
+         if (options.charts) {
+            config.charts = options.charts;
+         }
 
          fetch (url, {
             method: 'POST',
@@ -179,12 +181,32 @@ export default class UserManager extends Component {
    }
 
    static getActiveChart = (config) => {
-      console.log(config);
       return new Promise(function(resolve, reject) {
          const url = `${API.url}/users/${config.username}/charts/${config['active_chart']}`;
 
          fetch (url, {
             method: 'GET',
+            credentials: 'same-origin',
+         }).then(response => {
+            response.json().then(data => {
+               if (response.status >= 300) {
+                  reject(response);
+               }
+               resolve(data);
+            });
+         }).catch(e => {
+            reject(Error(e));
+         });
+      });
+   }
+
+   static deleteChart = (options) => {
+      return new Promise(function(resolve, reject) {
+         const config = options.config;
+         const url = `${API.url}/users/${config.username}/charts/${options.chartName}`;
+
+         fetch (url, {
+            method: 'DELETE',
             credentials: 'same-origin',
          }).then(response => {
             response.json().then(data => {
@@ -217,10 +239,6 @@ export default class UserManager extends Component {
             reject(Error(e));
          });
       });
-   }
-
-   static getCurrentYear() {
-      console.log(this.state.user);
    }
 
    handleEvent = (options) => {

@@ -60,7 +60,6 @@ export default class LoginView extends Component {
    render() {
       const {
          onSignup,
-         error
       } = this.state;
 
       return (
@@ -118,7 +117,7 @@ class LoginForm extends Component {
          });
       }).catch(error => {
          this.setState({
-            error: "Check your username or password",
+            error: error.message,
             isLoading: false
          });
       });
@@ -174,13 +173,14 @@ class SignupForm extends Component {
       const username = this.refs.username.value;
       const password = this.refs.password.value;
       const password2 = this.refs.password2.value;
-      let error;
+      let errorPassword = this.validatePassword(password, password2);
+      let errorEmail = this.validateEmail(email)
 
-      if (error = this.validatePassword(password, password2)) {
-         this.setState({error: error});
+      if (errorPassword) {
+         this.setState({error: errorPassword});
          return;
-      } else if (error = this.validateEmail(email)) {
-         this.setState({error: error});
+      } else if (errorEmail) {
+         this.setState({error: errorEmail});
          return;
       } else {
          this.setState({error: false});

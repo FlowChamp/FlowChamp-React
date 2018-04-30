@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { ArrowLeft, Menu, Settings, User, UserMinus } from 'react-feather';
 import UserManager from '../../UserManager';
+import LoadingIndicator from 'react-loading-indicator';
 
 export default class SidebarNav extends Component {
+   state = {
+      isLoading: false
+   }
+
    handleEvent = options => {
       this.props.onEvent(options);
    }
@@ -37,6 +42,7 @@ export default class SidebarNav extends Component {
 
    logOut = () => {
       const config = this.props.user.config;
+      this.setState({ isLoading: true });
 
       UserManager.logOut(config).then(() => {
          localStorage.removeItem('flowChampConfig');
@@ -54,6 +60,13 @@ export default class SidebarNav extends Component {
 
    LoginLogoutButton = () => {
       if (!this.props.user.requireAuth) return null;
+      if (this.state.isLoading) {
+         return (
+            <div className="loading-container">
+               <LoadingIndicator />
+            </div>
+         );
+      }
       return this.props.user.isLoggedIn ?
          <UserMinus className="sidebar-nav-icon"
             onClick={this.logOut}/> :

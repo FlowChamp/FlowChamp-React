@@ -34,14 +34,6 @@ export default class FlowChamp extends Component {
          case 'sidebar':
             this.toggleSidebar(options);
             break;
-         case 'change-chart':
-            if (options.value !== this.state.currentChart._name) {
-               this.setCurrentChart(options);
-            }
-            if (options.closeMenu) {
-               this.toggleSidebar({value: false});
-            }
-            break;
          case 'demo':
             this.toggleDemo(options.value);
             break;
@@ -63,11 +55,14 @@ export default class FlowChamp extends Component {
          case 'get-active-chart':
             this.getActiveChart();
             break;
+         case 'delete-chart':
+            this.deleteChart(options);
+            break;
          case 'chart-builder':
             this.toggleChartBuilder(options);
             break;
          default:
-            console.log("Empty event: ", options);
+            console.error("Empty event: ", options);
          break;
       }
    }
@@ -131,13 +126,6 @@ export default class FlowChamp extends Component {
       });
    }
 
-   setCurrentChart = (options) => {
-      console.log(options);
-      const url = options.demo
-         ? `/api/cpslo/stock_charts/15-17/${options.value}`
-         : `/api/cpslo/users/${options.username}/charts/${options.chart}`;
-   }
-
    setUserLoggedIn = options => {
       this.setState(state => {
          state.user.isLoggedIn = true;
@@ -153,49 +141,79 @@ export default class FlowChamp extends Component {
 
       config['active_chart'] = chartName;
 
+      this.setState({ isLoading: true });
       UserManager.updateConfig({
          config: config,
          field: 'active_chart',
+         charts: options.charts,
          value: chartName
       }).then(() => {
          this.setState(state => {
             state.user.config = config;
             return state;
          }, () => {
-            this.getActiveChart();
+            if (config['active_chart']) {
+               this.getActiveChart();
+            }
          });
       }).catch(e => {
-         console.log("Error: unable to set active chart: ", e);
+         console.error("Error: unable to set active chart: ", e);
       });
    }
 
-   getActiveChart = () => {
-      const config = this.state.user.config;
+   deleteChart = options => {
+      const chartName = options.value;
+      let config = this.state.user.config;
+      const activeChart = config['active_chart'];
+      const needNewActiveChart = chartName === activeChart;
 
-      UserManager.getActiveChart(config).then(response => {
-         this.setState(state => {
-            state.currentChart.name = config['active_chart'];
-            state.currentChart.data = response;
-            return state;
+      UserManager.deleteChart({
+         config: config,
+         chartName: chartName
+      }).then(response => {
+         delete config.charts[chartName];
+         // Get the first chart in the list of charts.
+         const firstChart = Object.keys(config.charts)[0];
+
+         this.setActiveChart({
+            value: needNewActiveChart ? firstChart : activeChart,
+            charts: config.charts
          });
-      }).catch(e => {
-         console.log("Error: unable to retrieve chart: ", e);
-      });
+      })
    }
 
    updateUserConfig = (config) => {
-      console.log(config);
       this.setState(state => {
          state.config = config;
          state.user.isLoggedIn = true;
-         console.log(this.state);
          return state;
+      }, () => {
+         this.getActiveChart(config);
       });
    }
 
    canShowFlowchart = () => {
-      return (this.state.user.isLoggedIn || !this.state.user.requireAuth) &&
-         (this.state.currentChart.data || this.state.currentChart.isBuilding);
+      return !this.state.isLoading && this.state.user.config &&
+         (this.state.user.isLoggedIn || !this.state.user.requireAuth) &&
+         (this.state.currentChart.data || this.state.currentChart.isBuilding) &&
+         this.state.user.config['active_chart'];
+   }
+
+   getActiveChart = newConfig => {
+      const config = newConfig || this.state.user.config;
+
+      UserManager.getActiveChart(config).then(response => {
+         this.setState(state => {
+            state.currentChart = {
+               name: config['active_chart'],
+               data: response
+            };
+            state.isLoading = false;
+            return state;
+         });
+      }).catch(e => {
+         console.error("Unable to load chart: ", e);
+      });
    }
 
    componentDidMount() {
@@ -203,28 +221,18 @@ export default class FlowChamp extends Component {
          ? JSON.parse(localStorage.flowChampConfig) : null;
 
       if (config) {
-         console.log(config);
          UserManager.getUserConfig(config.username).then(config => {
             this.setState(state => {
                state.user.config = config;
                state.user.isLoggedIn = true;
                return state;
             });
-            UserManager.getActiveChart(config).then(response => {
-               this.setState(state => {
-                  state.currentChart = {
-                     name: config['active_chart'],
-                     data: response
-                  };
-                  console.log(config['active_chart']);
-                  return state;
-               });
-            }).catch(e => {
-               console.log("Unable to load chart: ", e);
-            });
+            if (config['active_chart']) {
+               this.getActiveChart(config);
+            }
          }).catch(e => {
             // User most likely isn't logged in anymore
-            console.log
+            console.error('Error: You need to log in again');
          });
       }
    }
@@ -255,10 +263,12 @@ export default class FlowChamp extends Component {
             {this.canShowFlowchart()
                ? <Flowchart
                   user={this.state.user}
+                  noScroll={this.state.sidebar.isOpen}
                   currentChart={this.state.currentChart}
                   onEvent={this.handleEvent} />
                : <Welcome
-                  isLoggedIn={this.state.user.isLoggedIn}
+                  isLoggedIn={this.state.user.isLoggedIn &&
+                     this.state.user.config && this.state.user.config['active_chart']}
                   fadeOut={this.state.sidebar.isOpen && !this.state.sidebar.isClosing}/> }
          </div>
       );
