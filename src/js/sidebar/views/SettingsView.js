@@ -3,14 +3,7 @@ import ToggleButton from '../components/ToggleButton';
 import NavButton from '../components/NavButton';
 
 export default class SettingsView extends Component {
-	constructor(props) {
-		super(props);
-      this.state = {
-      };
-	}
-
    getSettingsEvents = () => {
-      const isDemo = this.props.isDemo;
       return {
          'clear-cache': {
             type: 'button',
@@ -50,6 +43,7 @@ export default class SettingsView extends Component {
          } else {
             settingsButtons.push(
                <NavButton
+                  key={options.label}
                   text={options.label}
                   action={options.action}
                   onEvent={this.handleEvent}/>

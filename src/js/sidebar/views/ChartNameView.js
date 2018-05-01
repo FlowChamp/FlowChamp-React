@@ -22,8 +22,7 @@ export default class ChartNameView extends Component {
          chartName: chartName
       }).then((data) => {
          this.props.onEvent({
-            type: 'user-update',
-            value: data
+            type: 'get-user-config',
          });
          this.props.onEvent({
             type: 'empty-views'

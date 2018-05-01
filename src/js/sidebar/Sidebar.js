@@ -95,11 +95,17 @@ export default class Sidebar extends Component {
          state.isEnteringOldView = true;
          return state;
       });
+
       setTimeout(() => {
          this.setState(state => {
             state.isEnteringOldView = false;
             if (state.viewStack.length > 1) {
                state.viewStack.pop();
+               const view = state.viewStack[state.viewStack.length-1].view;
+
+               if (view === 'login' || view === 'signup') {
+                  state.viewStack.pop();
+               }
             }
             return state;
          });

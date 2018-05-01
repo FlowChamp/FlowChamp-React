@@ -55,6 +55,9 @@ export default class FlowChamp extends Component {
          case 'get-active-chart':
             this.getActiveChart();
             break;
+         case 'get-user-config':
+            this.getUserConfig();
+            break;
          case 'delete-chart':
             this.deleteChart(options);
             break;
@@ -157,7 +160,8 @@ export default class FlowChamp extends Component {
             }
          });
       }).catch(e => {
-         console.error("Error: unable to set active chart: ", e);
+         alert("Your session has expired. Please log in again to continue.");
+         window.location.reload();
       });
    }
 
@@ -182,7 +186,29 @@ export default class FlowChamp extends Component {
       })
    }
 
+   getUserConfig = () => {
+      const username = this.state.user.config.username;
+      let needsChartUpdate = false;
+
+      UserManager.getUserConfig(username).then((config) => {
+         this.setState(state => {
+            state.user.config = config;
+            if (state.currentChart.name != config['active_chart']) {
+               needsChartUpdate = true;
+            }
+            return state;
+         }, () => {
+            if (needsChartUpdate) {
+               this.getActiveChart();
+            }
+         });
+      }).catch(e => {
+         console.error("Unable to get user config: ", e);
+      });
+   }
+
    updateUserConfig = (config) => {
+      console.log(config);
       this.setState(state => {
          state.config = config;
          state.user.isLoggedIn = true;
