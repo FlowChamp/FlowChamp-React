@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import UserManager from '../../UserManager';
+import LoadingIndicator from 'react-loading-indicator';
 
 export default class ChartNameView extends Component {
    state = {
-      loading: false,
+      isLoading: false,
       error: null
    };
 
@@ -21,6 +22,7 @@ export default class ChartNameView extends Component {
          stockName: this.props.data._name,
          chartName: chartName
       }).then((data) => {
+         this.setState({isLoading: false});
          this.props.onEvent({
             type: 'get-user-config',
          });
@@ -28,7 +30,10 @@ export default class ChartNameView extends Component {
             type: 'empty-views'
          });
       }).catch((error) => {
-         this.setState({ error: error });
+         this.setState({
+            error: error,
+            isLoading: false,
+         });
       });
    }
 
@@ -42,7 +47,14 @@ export default class ChartNameView extends Component {
             <form onSubmit={this.handleSubmit}>
                <input required type="text" placeholder="Flowchart Name" ref="chartName" autoFocus/>
                <h3 className="error-msg">{this.state.error}</h3>
-               <input className="submit-button" type="submit" value="Add Chart" />
+               <div className="submit-container">
+                  <input className="submit-button" type="submit" value="Add chart" />
+                  <div className="loading-indicator">
+                  {this.state.isLoading
+                     ? <LoadingIndicator className="loading-indicator"
+                        segmentLength={8} segmentWidth={3}/> : ''}
+                  </div>
+               </div>
             </form>
          </div>
       );

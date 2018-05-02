@@ -179,10 +179,14 @@ export default class FlowChamp extends Component {
          // Get the first chart in the list of charts.
          const firstChart = Object.keys(config.charts)[0];
 
-         this.setActiveChart({
-            value: needNewActiveChart ? firstChart : activeChart,
-            charts: config.charts
-         });
+         if (needNewActiveChart) {
+            this.setActiveChart({
+               value: firstChart,
+               charts: config.charts
+            });
+         } else {
+            this.updateUserConfig(config);
+         }
       })
    }
 
@@ -193,7 +197,7 @@ export default class FlowChamp extends Component {
       UserManager.getUserConfig(username).then((config) => {
          this.setState(state => {
             state.user.config = config;
-            if (state.currentChart.name != config['active_chart']) {
+            if (state.currentChart.name !== config['active_chart']) {
                needsChartUpdate = true;
             }
             return state;

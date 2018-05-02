@@ -51,14 +51,14 @@ $sidebarDuration: 0.3s;
       stroke-width: 1.5;
       height: auto;
       cursor: pointer;
-      margin-right: 0.5em;
-      color: #428bd2;
+      padding: 0 0.5em;
+      color: rgb(100,100,100);
    }
 
    .loading-container {
       display: flex;
       align-items: center;
-      padding: 0 11px;
+      padding: 0 14px;
    }
 
    .back-icon {
@@ -86,11 +86,11 @@ $sidebarDuration: 0.3s;
 
    .right-nav-container {
       justify-content: flex-end;
-      padding-right: 1em;
 
       .sidebar-nav-icon {
-         margin-left: 0.5em;
-         margin-right: 0;
+         &:active {
+            color: $blue;
+         }
       }
    }
 
