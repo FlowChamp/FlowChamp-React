@@ -61,6 +61,23 @@ export default class Flowchart extends Component {
       }
    }
 
+   sortData = () => {
+      const data = this.state.data;
+      let sortedData = [];
+
+      for (let key in data) {
+         const course = data[key];
+         const timeArray = course.block_metadata.time;
+         console.log(timeArray);
+
+      }
+   }
+
+   componentDidMount() {
+      const data = this.state.data;
+      this.sortData();
+   }
+
    onDragEnd = (result) => {
       console.log(result);
    }

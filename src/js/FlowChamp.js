@@ -192,18 +192,17 @@ export default class FlowChamp extends Component {
 
    getUserConfig = () => {
       const username = this.state.user.config.username;
-      let needsChartUpdate = false;
 
       UserManager.getUserConfig(username).then((config) => {
          this.setState(state => {
             state.user.config = config;
-            if (state.currentChart.name !== config['active_chart']) {
-               needsChartUpdate = true;
-            }
             return state;
          }, () => {
-            if (needsChartUpdate) {
-               this.getActiveChart();
+            if (this.state.currentChart.name !== config['active_chart']) {
+               this.setActiveChart({
+                  value: config['active_chart'],
+                  charts: config.charts
+               });
             }
          });
       }).catch(e => {
@@ -212,7 +211,6 @@ export default class FlowChamp extends Component {
    }
 
    updateUserConfig = (config) => {
-      console.log(config);
       this.setState(state => {
          state.config = config;
          state.user.isLoggedIn = true;
