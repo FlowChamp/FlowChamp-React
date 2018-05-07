@@ -10,16 +10,13 @@ export default class Flowchart extends Component {
    constructor(props) {
       super(props);
       this.state = {
+         isLoading: false,
          animateClose: false,
          modal: {
             isOpen: false,
             data: null,
          },
-         currentChart: {
-            _name: null,
-            name: "Welcome",
-            data: null,
-         }
+         currentChart: props.currentChart
       }
    }
 
@@ -60,8 +57,9 @@ export default class Flowchart extends Component {
    }
 
    getYearComponents = () => {
-      const data = this.state.data;
+      const data = this.state.currentChart.data;
       let yearComponents = [];
+
       for (let i in years) {
          const year = years[i];
          let yearData = [];
@@ -87,21 +85,6 @@ export default class Flowchart extends Component {
       return yearComponents;
    }
 
-   componentWillReceiveProps(nextProps) {
-      if (this.canShowFlowchart() && nextProps.currentChart.name !== this.state.name) {
-         this.setState({
-            animateClose: true
-         });
-         setTimeout(() => {
-            this.setState({
-               name: nextProps.currentChart.name,
-               data: nextProps.currentChart.data,
-               animateClose: false
-            });
-         }, 340);
-      }
-   }
-
    componentDidMount() {
       /*
       const data = this.state.data;
@@ -109,14 +92,26 @@ export default class Flowchart extends Component {
      */
    }
 
+   componentWillReceiveProps(nextProps) {
+      console.log(this.props, nextProps);
+      if (this.props.currentChart.name !== nextProps.currentChart.name) {
+         this.setState({ currentChart: null });
+         setTimeout(() => {
+            this.setState(state => {
+               state.currentChart = nextProps.currentChart
+               console.log(state);
+               return state;
+            });
+         });
+      }
+   }
+
    onDragEnd = (result) => {
       console.log(result);
    }
 
    canShowFlowchart = () => {
-      return !this.state.isLoading && this.props.user.config &&
-         (this.props.user.isLoggedIn && this.state.currentChart.data) &&
-         this.props.user.config['active_chart'];
+      return (this.state.currentChart && this.state.currentChart.data !== null);
    }
 
    render() {
@@ -127,13 +122,13 @@ export default class Flowchart extends Component {
 
       return (
          <DragDropContext onDragEnd={this.onDragEnd}>
-            {this.canShowFlowchart()
-            ? <div className={`flowchart ${classNames}`}>
-               <div className="year-container">
-                  {this.state.data ? this.getYearComponents() : null}
-               </div>
-            </div>
-            : <Welcome user={this.props.user} />
+            {this.state.currentChart && this.state.currentChart.data
+               ?  <div className={`flowchart ${classNames}`}>
+                     <div className="year-container">
+                        {this.getYearComponents()}
+                     </div>
+                  </div>
+               :  <Welcome user={this.props.user} />
             }
             {this.state.modal.data && this.state.modal.isOpen
                ? <CourseModal

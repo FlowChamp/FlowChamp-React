@@ -127,16 +127,9 @@ export default class UserManager extends Component {
       });
    }
 
-   static updateConfig = options => {
+   static updateConfig = config => {
       return new Promise(function(resolve, reject) {
-         let config = options.config;
          const url = `${API.url}/users/${config.username}/config`;
-
-         // Set the new value at the specified field
-         config[options.field] = options.value;
-         if (options.charts) {
-            config.charts = options.charts;
-         }
 
          fetch (url, {
             method: 'POST',
@@ -173,6 +166,8 @@ export default class UserManager extends Component {
                }
                localStorage.flowChampConfig = JSON.stringify(data);
                resolve(data);
+            }).catch(e => {
+               console.log("JSON Parse error:", e);
             });
          }).catch(e => {
             reject(Error(e));

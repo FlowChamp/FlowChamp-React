@@ -31,6 +31,9 @@ export default class FlowChamp extends Component {
          case 'user-update':
             this.updateUserConfig(options.value);
             break;
+         case 'update-user-config':
+            this.updateUserConfig(options);
+            break;
          case 'get-user-config':
             this.getUserConfig();
             break;
@@ -94,6 +97,27 @@ export default class FlowChamp extends Component {
       });
    }
 
+   updateUserConfig = options => {
+      const config = options.value;
+
+      if (options.stateOnly) {
+         this.setState(state => {
+            state.user.config = config;
+            return state;
+         });
+         return;
+      }
+      UserManager.updateConfig(config).then(response => {
+         this.setState(state => {
+            state.user.config = config;
+            console.log("Config updated");
+            return state;
+         });
+      }).catch(e => {
+         console.error("Unable to update user config: ", e);
+      });
+   }
+
    attemptLogin() {
       const config = localStorage.flowChampConfig
          ? JSON.parse(localStorage.flowChampConfig) : null;
@@ -105,12 +129,10 @@ export default class FlowChamp extends Component {
                state.user.isLoggedIn = true;
                return state;
             });
-            if (config['active_chart']) {
-               this.getActiveChart(config);
-            }
          }).catch(e => {
             // User most likely isn't logged in anymore
             console.error('Error: You need to log in again');
+            console.log(e);
          });
       }
    }
@@ -186,29 +208,5 @@ export default class FlowChamp extends Component {
       });
    }
 
-   deleteChart = options => {
-      const chartName = options.value;
-      let config = this.state.user.config;
-      const activeChart = config['active_chart'];
-      const needNewActiveChart = chartName === activeChart;
-
-      UserManager.deleteChart({
-         config: config,
-         chartName: chartName
-      }).then(response => {
-         delete config.charts[chartName];
-         // Get the first chart in the list of charts.
-         const firstChart = Object.keys(config.charts)[0];
-
-         if (needNewActiveChart) {
-            this.setActiveChart({
-               value: firstChart,
-               charts: config.charts
-            });
-         } else {
-            this.updateUserConfig(config);
-         }
-      })
-   }
 */
 

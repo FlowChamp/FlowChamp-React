@@ -12,7 +12,11 @@ export default class ChartButton extends Component {
    }
 
    handleEvent = options => {
-      this.props.onEvent(options);
+      switch(options.type) {
+         default:
+            this.props.onEvent(options);
+            break;
+      }
    }
 
    setActiveChart = () => {
@@ -48,6 +52,7 @@ export default class ChartButton extends Component {
                <h5 className="chart-type">{this.props.stockChartName.split('_').join(' ')}</h5>
             </div>
             <ActionContainer
+               isLoading={this.state.isLoading}
                name={this.props.chartName}
                onEvent={this.handleEvent} />
          </div>
@@ -62,7 +67,6 @@ class ActionContainer extends Component {
 
    deleteChart = (e) => {
       e.stopPropagation();
-      this.setState({ isLoading: true });
       this.props.onEvent({
          type: 'delete-chart',
          value: this.props.name
@@ -72,7 +76,7 @@ class ActionContainer extends Component {
    render() {
       return(
          <div className="action-container" onClick={this.deleteChart}>
-            {this.state.isLoading
+            {this.state.isLoading || this.props.isLoading
                ? <LoadingIndicator className="loading-indicator"/>
                : <X className="delete-button" />}
          </div>

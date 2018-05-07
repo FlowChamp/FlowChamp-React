@@ -59,7 +59,6 @@ export default class SidebarNav extends Component {
    }
 
    LoginLogoutButton = () => {
-      if (!this.props.user.requireAuth) return null;
       if (this.state.isLoading) {
          return (
             <div className="loading-container">

@@ -1,9 +1,56 @@
 import React, { Component } from 'react';
 import ChartButton from '../components/ChartButton';
+import UserManager from '../../UserManager';
 
 export default class MainView extends Component {
    handleEvent = (options) => {
-      this.props.onEvent(options);
+      switch(options.type) {
+         case 'set-active-chart':
+            this.setActiveChart(options);
+            break;
+         case 'delete-chart':
+            this.deleteChart(options);
+            break;
+         default:
+            this.props.onEvent(options);
+            break;
+      }
+   }
+
+   setActiveChart(options) {
+      let config = this.props.user.config;
+
+      config.active_chart = options.value;
+      this.handleEvent({
+         type: 'update-user-config',
+         value: config
+      });
+   }
+
+   deleteChart = options => {
+      const chartName = options.value;
+      let config = this.props.user.config;
+      const activeChart = config['active_chart'];
+      let stateOnly = true;
+
+      UserManager.deleteChart({
+         config: config,
+         chartName: chartName
+      }).then(response => {
+         config = response;
+
+         if (!config.active_chart) {
+            config.active_chart = Object.keys(config.charts)[0];
+            stateOnly = false;
+         }
+         this.handleEvent({
+            type: 'update-user-config',
+            value: config,
+            stateOnly: stateOnly
+         });
+      }).catch(e => {
+         console.error("Unable to delete chart", e);
+      });
    }
 
    render() {
@@ -48,7 +95,7 @@ class ChartSelectWidget extends Component {
       const config = this.props.user.config;
       const chartButtons = [];
 
-      for (let name in this.state.charts) {
+      for (let name in config.charts) {
          chartButtons.push(
             <ChartButton
                key={name}
@@ -63,7 +110,7 @@ class ChartSelectWidget extends Component {
    }
 
    newChart = () => {
-      if (!this.props.user.isLoggedIn && this.props.user.requireAuth) {
+      if (!this.props.user.isLoggedIn) {
          this.handleEvent({
             type: 'change-view',
             value: 'login',
@@ -74,7 +121,6 @@ class ChartSelectWidget extends Component {
          this.handleEvent({
             type: 'change-view',
             value: 'chartSelect',
-            demo: true,
          });
       }
    }

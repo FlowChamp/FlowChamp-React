@@ -3,6 +3,7 @@ import SplitPane from 'react-split-pane';
 import Flowchart from './flowchart/Flowchart';
 import AppSelector from './app_selector/AppSelector';
 import { X } from 'react-feather';
+import UserManager from '../UserManager';
 
 const apps = {
    'Flowchart': <Flowchart />,
@@ -17,6 +18,10 @@ export default class AppManager extends Component {
          layout: {
             pane1: [{title: 'Flowchart', props: {}}],
             pane2: [{title: 'Flowchart', props: {}}],
+         },
+         currentChart: {
+            name: "Welcome",
+            data: null,
          }
       }
    }
@@ -64,12 +69,14 @@ export default class AppManager extends Component {
                   {...this.props}
                   index={1}
                   app={pane1}
+                  currentChart={this.state.currentChart}
                   onEvent={this.handleEvent}
                   />
                <PaneContainer
                   {...this.props}
                   index={2}
                   app={pane2}
+                  currentChart={this.state.currentChart}
                   onEvent={this.handleEvent}
                   />
             </SplitPane>
@@ -80,6 +87,7 @@ export default class AppManager extends Component {
                {...this.props}
                index={1}
                app={pane1}
+               currentChart={this.state.currentChart}
                hideTabs
                onEvent={this.handleEvent}
                />
@@ -87,10 +95,35 @@ export default class AppManager extends Component {
       }
    }
 
+   getActiveChart(config) {
+      if (config.active_chart !== this.state.currentChart.name) {
+         this.setState(state => {
+            state.currentChart.name = config.active_chart;
+            return state;
+         }, () => {
+            this.getChartData(config);
+         });
+      }
+   }
+
+   getChartData = (config) => {
+      UserManager.getActiveChart(config).then(response => {
+         this.setState(state => {
+            state.currentChart.data = response;
+            return state;
+         });
+      }).catch(e => {
+         console.error("Unable to get chart data:", e);
+      });
+   }
+
    componentWillReceiveProps(nextProps) {
       this.setState({
          splitPane: nextProps.splitPane
       });
+      if (nextProps.user.isLoggedIn) {
+         this.getActiveChart(nextProps.user.config);
+      }
    }
 
    render() {
@@ -103,6 +136,14 @@ export default class AppManager extends Component {
 }
 
 class PaneContainer extends Component {
+   constructor(props) {
+      super(props);
+      this.state = {
+         currentChart: props.currentChart,
+         currentApp: null
+      }
+   }
+
    closeTab = () => {
       this.props.onEvent({
          type: 'close-tab',
@@ -122,20 +163,38 @@ class PaneContainer extends Component {
          props: {}
       };
       let app = apps[appItem.title];
+      const currentChart = this.state.currentChart;
 
       appItem.props = {
          user: this.props.user,
-         onEvent: this.props.onEvent
+         onEvent: this.handleEvent,
+         currentChart: currentChart
       }
 
       try {
-         return React.cloneElement(app, appItem.props);
+         this.setState(state => {
+            state.currentApp = React.cloneElement(app, appItem.props);
+            return state;
+         });
       } catch(e) {
          console.error("This app seems to have issues :/");
          console.log("App View: ", app);
          console.log("Props: ",appItem.props);
          console.error(e);
       }
+   }
+
+   componentDidMount() {
+      this.getCurrentApp()
+   }
+
+   componentWillReceiveProps(nextProps) {
+      this.setState(state => {
+         state.currentChart = nextProps.currentChart;
+         return state;
+      }, () => {
+         this.getCurrentApp();
+      });
    }
 
    render() {
@@ -152,7 +211,7 @@ class PaneContainer extends Component {
                      <X className="icon" onClick={this.closeTab}/>
                   </div>
                </div>}
-            {this.getCurrentApp()}
+            {this.state.currentApp}
          </div>
       );
    }
