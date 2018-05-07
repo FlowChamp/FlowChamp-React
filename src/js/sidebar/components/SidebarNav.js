@@ -14,8 +14,8 @@ export default class SidebarNav extends Component {
 
    closeSidebar = () => {
       this.handleEvent({
-         type: 'sidebar',
-         action: 'toggle'
+         type: 'toggle-sidebar',
+         value: false
       });
    }
 

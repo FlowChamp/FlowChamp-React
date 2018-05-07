@@ -8,8 +8,13 @@ export default class Header extends Component {
 
    toggleSidebar = () => {
       this.handleEvent({
-         type: 'sidebar',
-         action: 'toggle',
+         type: 'toggle-sidebar',
+      });
+   }
+
+   toggleSplitPane = () => {
+      this.handleEvent({
+         type: 'toggle-split-pane'
       });
    }
 
@@ -23,11 +28,16 @@ export default class Header extends Component {
                <h3 className="header-title">{this.props.name}</h3>
             </div>
             <div className="header-container right">
-               {this.props.currentChart.data && !this.props.user.requireAuth
-                  ? <h3>EDIT</h3>
-                  : ''}
+               <h3 onClick={this.toggleSplitPane}>SPLIT</h3>
             </div>
          </div>
       );
    }
 }
+
+
+           /*
+               {this.props.currentChart.data && !this.props.user.requireAuth
+                  ? <h3>EDIT</h3>
+                  : ''}
+                 */

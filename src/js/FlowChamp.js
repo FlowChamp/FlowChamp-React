@@ -1,47 +1,29 @@
 import React, { Component } from 'react';
-import Flowchart from './flowchart/Flowchart';
+//import Flowchart from './flowchart/Flowchart';
 import UserManager from './UserManager';
 import Sidebar from './sidebar/Sidebar';
 import Header from './Header';
-import CourseModal from './CourseModal';
-import Welcome from './flowchart/Welcome';
+import AppManager from './apps/AppManager';
+//import Welcome from './flowchart/Welcome';
 
 export default class FlowChamp extends Component {
    state = {
       user: {
-         requireAuth: true,
          isLoggedIn: false,
          config: null,
       },
       sidebar: {
          isOpen: false,
-         isClosing: false,
       },
-      modal: {
-         isOpen: false,
-         data: null,
-      },
-      currentChart: {
-         isBuilding: false,
-         _name: null,
-         name: "Welcome",
-         data: null,
+      app: {
+         splitPane: false
       }
    }
 
    handleEvent = (options) => {
       switch(options.type) {
-         case 'sidebar':
+         case 'toggle-sidebar':
             this.toggleSidebar(options);
-            break;
-         case 'demo':
-            this.toggleDemo(options.value);
-            break;
-         case 'open-course-modal':
-            this.setModalData(options);
-            break;
-         case 'close-course-modal':
-            this.closeModal();
             break;
          case 'user-login':
             this.setUserLoggedIn(options);
@@ -49,20 +31,11 @@ export default class FlowChamp extends Component {
          case 'user-update':
             this.updateUserConfig(options.value);
             break;
-         case 'set-active-chart':
-            this.setActiveChart(options);
-            break;
-         case 'get-active-chart':
-            this.getActiveChart();
-            break;
          case 'get-user-config':
             this.getUserConfig();
             break;
-         case 'delete-chart':
-            this.deleteChart(options);
-            break;
-         case 'chart-builder':
-            this.toggleChartBuilder(options);
+         case 'toggle-split-pane':
+            this.toggleSplitPane(options);
             break;
          default:
             console.error("Empty event: ", options);
@@ -70,63 +43,27 @@ export default class FlowChamp extends Component {
       }
    }
 
-   toggleSidebar = (options) => {
-      if (this.state.sidebar.isOpen) {
-         this.closeSidebar();
+   toggleSidebar(options) {
+      if (options.value) {
+         this.setState({ sidebar: { isOpen: options.value } });
       } else {
-         this.setState(state => {
-            state.sidebar.isOpen = true;
-            return state;
+         this.setState({
+            sidebar: {
+               isOpen: !this.state.sidebar.isOpen
+            }
          });
       }
    }
 
-   closeSidebar = () => {
-      this.setState(state => {
-         state.sidebar.isClosing = true;
-         return state;
-      });
-      setTimeout(() => {
+   toggleSplitPane(options) {
+      if (options.value) {
+         this.setState({ app: { splitPane: options.value } });
+      } else {
          this.setState(state => {
-            state.sidebar.isOpen = false;
-            state.sidebar.isClosing = false;
+            state.app.splitPane = !state.app.splitPane;
             return state;
          });
-      }, 290);
-   }
-
-   setModalData = (options) => {
-      this.setState(state => {
-         state.modal.data = options.value;
-         state.modal.isOpen = true;
-         return state;
-      });
-   }
-
-   closeModal = () => {
-      this.setState(state => {
-         state.modal.isOpen = false;
-         state.modal.data = null;
-         return state;
-      });
-   }
-
-   toggleDemo = (value) => {
-      this.setState(state => {
-         state.user.requireAuth = !value;
-         return state;
-      });
-   }
-
-   toggleChartBuilder = options => {
-      this.setState(state => {
-         state.currentChart.isBuilding = true;
-         state.currentChart._name = 'Chart_Builder';
-         state.currentChart.name = 'Chart Builder';
-         state.currentChart.data = null;
-
-         return state;
-      });
+      }
    }
 
    setUserLoggedIn = options => {
@@ -138,6 +75,90 @@ export default class FlowChamp extends Component {
       });
    }
 
+   getUserConfig = () => {
+      const username = this.state.user.config.username;
+
+      UserManager.getUserConfig(username).then((config) => {
+         this.setState(state => {
+            state.user.config = config;
+            return state;
+         }, () => {
+            this.setState({
+               user: {
+                  config: config
+               }
+            });
+         });
+      }).catch(e => {
+         console.error("Unable to get user config: ", e);
+      });
+   }
+
+   attemptLogin() {
+      const config = localStorage.flowChampConfig
+         ? JSON.parse(localStorage.flowChampConfig) : null;
+
+      if (config) {
+         UserManager.getUserConfig(config.username).then(config => {
+            this.setState(state => {
+               state.user.config = config;
+               state.user.isLoggedIn = true;
+               return state;
+            });
+            if (config['active_chart']) {
+               this.getActiveChart(config);
+            }
+         }).catch(e => {
+            // User most likely isn't logged in anymore
+            console.error('Error: You need to log in again');
+         });
+      }
+   }
+
+   componentDidMount() {
+      this.attemptLogin();
+   }
+
+   render() {
+      const {
+         user,
+         sidebar,
+         app
+      } = this.state;
+
+      return (
+         <div className="app-contents">
+            <UserManager
+               user={user}
+               onEvent={this.handleEvent} />
+            <Header
+               user={user}
+               onEvent={this.handleEvent} />
+            <Sidebar
+               isOpen={sidebar.isOpen}
+               user={user}
+               onEvent={this.handleEvent} />
+            <AppManager
+               splitPane={app.splitPane}
+               user={user}
+               onEvent={this.handleEvent}/>
+         </div>
+      );
+   }
+}
+   /*
+   updateUserConfig = (config) => {
+      this.setState(state => {
+         state.config = config;
+         state.user.isLoggedIn = true;
+         return state;
+      }, () => {
+         this.getActiveChart(config);
+      });
+   }
+*/
+
+/*
    setActiveChart = options => {
       let config = this.state.user.config;
       const chartName = options.value;
@@ -189,116 +210,5 @@ export default class FlowChamp extends Component {
          }
       })
    }
+*/
 
-   getUserConfig = () => {
-      const username = this.state.user.config.username;
-
-      UserManager.getUserConfig(username).then((config) => {
-         this.setState(state => {
-            state.user.config = config;
-            return state;
-         }, () => {
-            if (this.state.currentChart.name !== config['active_chart']) {
-               this.setActiveChart({
-                  value: config['active_chart'],
-                  charts: config.charts
-               });
-            }
-         });
-      }).catch(e => {
-         console.error("Unable to get user config: ", e);
-      });
-   }
-
-   updateUserConfig = (config) => {
-      this.setState(state => {
-         state.config = config;
-         state.user.isLoggedIn = true;
-         return state;
-      }, () => {
-         this.getActiveChart(config);
-      });
-   }
-
-   canShowFlowchart = () => {
-      return !this.state.isLoading && this.state.user.config &&
-         (this.state.user.isLoggedIn || !this.state.user.requireAuth) &&
-         (this.state.currentChart.data || this.state.currentChart.isBuilding) &&
-         this.state.user.config['active_chart'];
-   }
-
-   getActiveChart = newConfig => {
-      const config = newConfig || this.state.user.config;
-
-      UserManager.getActiveChart(config).then(response => {
-         this.setState(state => {
-            state.currentChart = {
-               name: config['active_chart'],
-               data: response
-            };
-            state.isLoading = false;
-            return state;
-         });
-      }).catch(e => {
-         console.error("Unable to load chart: ", e);
-      });
-   }
-
-   componentDidMount() {
-      const config = localStorage.flowChampConfig
-         ? JSON.parse(localStorage.flowChampConfig) : null;
-
-      if (config) {
-         UserManager.getUserConfig(config.username).then(config => {
-            this.setState(state => {
-               state.user.config = config;
-               state.user.isLoggedIn = true;
-               return state;
-            });
-            if (config['active_chart']) {
-               this.getActiveChart(config);
-            }
-         }).catch(e => {
-            // User most likely isn't logged in anymore
-            console.error('Error: You need to log in again');
-         });
-      }
-   }
-
-   render() {
-      return (
-         <div className={`app-contents ${this.state.modal.isOpen ? 'no-scroll' : ''}`}>
-            <UserManager
-               user={this.state.user}
-               onEvent={this.handleEvent} />
-            <Header
-               currentChart={this.state.currentChart}
-               user={this.state.user}
-               name={this.state.user.isLoggedIn ? this.state.currentChart.name : "Welcome"}
-               onEvent = {this.handleEvent} />
-            <Sidebar
-               isOpen = {this.state.sidebar.isOpen}
-               isClosing={this.state.sidebar.isClosing}
-               user={this.state.user}
-               currentChart={this.state.currentChart}
-               onEvent = {this.handleEvent} />
-            {this.state.modal.data && this.state.modal.isOpen
-               ? <CourseModal
-                  data={this.state.modal.data}
-                  onEvent={this.handleEvent} />
-               : ''
-            }
-            {this.canShowFlowchart()
-               ? <Flowchart
-                  user={this.state.user}
-                  noScroll={this.state.sidebar.isOpen}
-                  currentChart={this.state.currentChart}
-                  onEvent={this.handleEvent} />
-               : <Welcome
-                  isLoggedIn={this.state.user.isLoggedIn &&
-                     this.state.user.config && this.state.user.config['active_chart']}
-                  fadeOut={this.state.sidebar.isOpen && !this.state.sidebar.isClosing}/> }
-         </div>
-      );
-   }
-}

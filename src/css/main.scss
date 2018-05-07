@@ -10,14 +10,18 @@
 
 @import 'header';
 @import 'welcome';
+@import 'app-container';
 
 @import 'course-modal';
+
+@import 'apps/app-selector';
 
 @import 'flowchart/flowchart';
 @import 'flowchart/year';
 @import 'flowchart/quarter';
 @import 'flowchart/block';
 
+@import 'components/split-pane';
 @import 'components/nav-button';
 @import 'components/_input-fields';
 @import 'components/chart-button';

@@ -22,6 +22,7 @@ export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
       this.state = {
+			isClosing: false,
          isChangingView: false,
          viewStack: [{
             view: 'main', props: {}
@@ -121,13 +122,6 @@ export default class Sidebar extends Component {
       });
    }
 
-   closeSidebar = () => {
-      this.handleEvent({
-         type: 'sidebar',
-         action: 'toggle'
-      });
-   }
-
    getSidebarView = () => {
       let stack = this.state.viewStack;
       var stackItem = stack[stack.length-1];
@@ -149,12 +143,38 @@ export default class Sidebar extends Component {
       }
    }
 
+   closeSidebar() {
+      this.handleEvent({
+         type: 'toggle-sidebar',
+         value: false
+      });
+   }
+
+	animateClosed() {
+		this.setState({
+			isClosing: true,
+		});
+
+		setTimeout(() => {
+			this.setState({
+				isClosing: false,
+			});
+		}, 290);
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		const closeRequested = prevProps.isOpen && !this.props.isOpen;
+		if (closeRequested) {
+			this.animateClosed();
+		}
+	}
+
    render() {
       return (
-         <div className="sidebar-container" style={{display: `${this.props.isOpen ? 'block' : 'none'}`}}>
-            <div className={`background-cover ${this.props.isClosing ? 'cover-closing' : ''}`}
+         <div className="sidebar-container" style={{display: `${this.props.isOpen || this.state.isClosing ? 'block' : 'none'}`}}>
+            <div className={`background-cover ${this.state.isClosing ? 'cover-closing' : ''}`}
              onClick = {this.closeSidebar}></div>
-            <div className={`sidebar ${this.props.isClosing ? 'closing' : ''}`}>
+            <div className={`sidebar ${this.state.isClosing ? 'closing' : ''}`}>
                <SidebarNav {...this.props}
                   viewStack={this.state.viewStack}
                   onEvent={this.handleEvent}/>

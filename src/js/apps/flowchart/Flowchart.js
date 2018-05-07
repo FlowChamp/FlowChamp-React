@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Year from './Year';
 import { DragDropContext } from 'react-beautiful-dnd';
+import CourseModal from './CourseModal';
+import Welcome from './Welcome';
 
 const years = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
 
@@ -8,14 +10,53 @@ export default class Flowchart extends Component {
    constructor(props) {
       super(props);
       this.state = {
-         name: props.currentChart.name,
-         data: props.currentChart.data,
          animateClose: false,
+         modal: {
+            isOpen: false,
+            data: null,
+         },
+         currentChart: {
+            _name: null,
+            name: "Welcome",
+            data: null,
+         }
       }
    }
 
    handleEvent = (options) => {
-      this.props.onEvent(options);
+      switch(options.type) {
+         case 'open-course-modal':
+            this.setModalData(options);
+            break;
+         case 'close-course-modal':
+            this.closeModal();
+            break;
+         case 'delete-chart':
+            this.deleteChart(options);
+            break;
+         default:
+            this.props.onEvent(options);
+            break;
+      }
+   }
+
+
+   /* Modal Functions */
+
+   setModalData = (options) => {
+      this.setState(state => {
+         state.modal.data = options.value;
+         state.modal.isOpen = true;
+         return state;
+      });
+   }
+
+   closeModal = () => {
+      this.setState(state => {
+         state.modal.isOpen = false;
+         state.modal.data = null;
+         return state;
+      });
    }
 
    getYearComponents = () => {
@@ -47,7 +88,7 @@ export default class Flowchart extends Component {
    }
 
    componentWillReceiveProps(nextProps) {
-      if (nextProps.currentChart.name !== this.state.name) {
+      if (this.canShowFlowchart() && nextProps.currentChart.name !== this.state.name) {
          this.setState({
             animateClose: true
          });
@@ -61,40 +102,45 @@ export default class Flowchart extends Component {
       }
    }
 
-   sortData = () => {
-      const data = this.state.data;
-      let sortedData = [];
-
-      for (let key in data) {
-         const course = data[key];
-         const timeArray = course.block_metadata.time;
-         console.log(timeArray);
-
-      }
-   }
-
    componentDidMount() {
+      /*
       const data = this.state.data;
       this.sortData();
+     */
    }
 
    onDragEnd = (result) => {
       console.log(result);
    }
 
+   canShowFlowchart = () => {
+      return !this.state.isLoading && this.props.user.config &&
+         (this.props.user.isLoggedIn && this.state.currentChart.data) &&
+         this.props.user.config['active_chart'];
+   }
+
    render() {
       const {
          animateClose
       } = this.state;
-      const classNames = `${animateClose ? 'animate-close' : ''} ${this.props.noScroll ? 'no-scroll' : ''}`;
+      const classNames = `${animateClose ? 'animate-close' : ''} ${this.state.modal.isOpen ? 'no-scroll' : ''}`;
 
       return (
          <DragDropContext onDragEnd={this.onDragEnd}>
-            <div className={`flowchart ${classNames}`}>
+            {this.canShowFlowchart()
+            ? <div className={`flowchart ${classNames}`}>
                <div className="year-container">
                   {this.state.data ? this.getYearComponents() : null}
                </div>
             </div>
+            : <Welcome user={this.props.user} />
+            }
+            {this.state.modal.data && this.state.modal.isOpen
+               ? <CourseModal
+                  data={this.state.modal.data}
+                  onEvent={this.handleEvent} />
+               : ''
+            }
 			</DragDropContext>
       );
    }

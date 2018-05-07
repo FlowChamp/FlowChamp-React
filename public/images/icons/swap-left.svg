@@ -1,0 +1,16 @@
+<svg width="48" height="44" viewBox="0 0 48 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Canvas" fill="none">
+<g id="swap-right">
+<rect id="Rectangle 8" x="2" y="2" width="25" height="40" rx="6" transform="translate(47.7065 0) scale(-1 1)" stroke="black" stroke-width="4"/>
+<g id="Group">
+<rect id="Rectangle 9" width="30" height="4" rx="2" transform="translate(30.7065 20) scale(-1 1)" fill="black"/>
+<path id="Rectangle 9.1" d="M 0 2C 0 0.895431 0.895431 0 2 0L 13.0142 0C 14.1187 0 15.0142 0.895431 15.0142 2L 15.0142 2C 15.0142 3.10457 14.1187 4 13.0142 4L 2 4C 0.89543 4 0 3.10457 0 2L 0 2Z" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 13.445 29.8781)" fill="black"/>
+<path id="Rectangle 9.2" d="M 2.19494e-05 2.00003C 2.19494e-05 0.895456 0.895452 2.59625e-05 2.00002 2.59625e-05L 13.0142 2.59625e-05C 14.1187 2.59625e-05 15.0142 0.895456 15.0142 2.00003L 15.0142 2.00003C 15.0142 3.1046 14.1187 4.00003 13.0142 4.00003L 2.00002 4.00003C 0.895452 4.00003 2.19494e-05 3.1046 2.19494e-05 2.00003L 2.19494e-05 2.00003Z" transform="matrix(-0.707107 0.707107 -0.707107 -0.707107 13.7065 13.8284)" fill="black"/>
+</g>
+<path id="Rectangle 10" d="M 0 0L 10 0L 10 8L 0 8L 0 0Z" transform="translate(25.7065 12) scale(-1 1)" fill="white"/>
+<path id="Rectangle 10.1" d="M 0 0L 10 0L 10 9L 0 9L 0 0Z" transform="translate(25.7065 24) scale(-1 1)" fill="white"/>
+<rect id="Rectangle 10.4" width="4" height="8" rx="2" transform="translate(22.7065 29) scale(-1 1)" fill="black"/>
+<rect id="Rectangle 10.5" width="4" height="8" rx="2" transform="translate(22.7065 7) scale(-1 1)" fill="black"/>
+</g>
+</g>
+</svg>

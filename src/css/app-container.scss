@@ -1,0 +1,44 @@
+.app-container {
+   position: fixed;
+   top: 4em;
+   bottom: 0;
+   left: 0;
+   right: 0;
+}
+
+.app {
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+}
+
+.tab-container {
+   justify-content: space-between;
+   align-items: center;
+   height: 2.5em;
+   padding: 0 1em;
+   border-bottom: 1px solid #DDDDDD;
+
+   h3 {
+      margin: 0;
+      font-family: "SF Pro Display", sans-serif;
+      font-weight: normal;
+   }
+
+   .icon, .img-icon {
+      cursor: pointer;
+      padding: 0 0.25em;
+   }
+
+   .tab-action-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .img-icon {
+      height: 15px;
+   }
+}

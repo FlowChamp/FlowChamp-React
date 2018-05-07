@@ -12,6 +12,7 @@
     "react-ios-switch": "^0.1.19",
     "react-loading-indicator": "^1.0.2",
     "react-scripts": "1.1.1",
+    "react-split-pane": "^0.1.77",
     "react-transition-group": "^1.2.1"
   },
   "scripts": {
