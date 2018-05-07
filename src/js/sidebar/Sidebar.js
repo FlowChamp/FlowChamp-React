@@ -143,7 +143,7 @@ export default class Sidebar extends Component {
       }
    }
 
-   closeSidebar() {
+   closeSidebar = () => {
       this.props.onEvent({
          type: 'toggle-sidebar',
          value: false
